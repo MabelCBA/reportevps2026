@@ -1,2985 +1,1407 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Laudo Técnico</title>
-
 <style>
-
-/* =========================================================
-   RESET
-========================================================= */
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html {
-    background: #e9edf0;
-}
-
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #e9edf0;
-    color: #17212b;
-    padding: 30px;
-}
-
-
-:root {
-
-    --azul: #0078b8;
-    --azul-escuro: #10212d;
-    --azul-claro: #e8f5fb;
-
-    --cinza-1: #f5f7f8;
-    --cinza-2: #e1e6e9;
-    --cinza-3: #87939b;
-
-    --verde: #218447;
-    --verde-bg: #edf8f1;
-
-    --vermelho: #c52d2d;
-    --vermelho-bg: #fff0f0;
-
-    --amarelo: #d99500;
-    --amarelo-bg: #fff7e5;
-
-}
-
-
-/* =========================================================
-   CONTAINER PRINCIPAL
-========================================================= */
-
-.laudo {
-
-    width: 100%;
-    max-width: 1000px;
-
-    margin: auto;
-
-    background: #ffffff;
-
-    box-shadow: 0 15px 45px rgba(20, 35, 45, .15);
-
-    overflow: hidden;
-
-}
-
-
-/* =========================================================
-   CABEÇALHO
-========================================================= */
-
-.header {
-
-    position: relative;
-
-    padding: 34px 42px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #10212d 0%,
-            #162e3d 65%,
-            #0078b8 100%
-        );
-
-    color: white;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: flex-start;
-
-    gap: 20px;
-
-}
-
-
-.header::after {
-
-    content: "";
-
-    position: absolute;
-
-    left: 0;
-    bottom: 0;
-
-    width: 100%;
-
-    height: 5px;
-
-    background: #38a9dc;
-
-}
-
-
-.header-titulo h1 {
-
-    font-size: 25px;
-
-    letter-spacing: .5px;
-
-}
-
-
-.header-titulo .numero-laudo {
-
-    color: #7dd0f6;
-
-}
-
-
-.header-titulo p {
-
-    margin-top: 10px;
-
-    font-size: 12.5px;
-
-    color: #c8d7df;
-
-    line-height: 1.8;
-
-}
-
-
-.header-titulo p strong {
-
-    color: #eef6fb;
-
-}
-
-
-.marca-simbolo {
-
-    flex-shrink: 0;
-
-    width: 58px;
-    height: 58px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: rgba(255,255,255,.08);
-
-    border: 1.5px solid rgba(255,255,255,.45);
-
-    border-radius: 50%;
-
-}
-
-.marca-simbolo svg {
-    width: 30px;
-    height: 30px;
-}
-
-
-/* =========================================================
-   AVISO DE EDIÇÃO
-========================================================= */
-
-.aviso-edicao {
-
-    margin: 20px 42px 0;
-
-    padding: 10px 16px;
-
-    background: #f0f7fb;
-
-    border: 1px dashed #9ed8f4;
-
-    border-radius: 6px;
-
-    font-size: 12px;
-
-    color: #205a75;
-
-    line-height: 1.5;
-
-}
-
-
-/* =========================================================
-   CAMPOS EDITÁVEIS
-========================================================= */
-
-[contenteditable="true"] {
-
-    position: relative;
-
-    outline: none;
-
-    border: 1px dashed #c7d2d8;
-
-    border-radius: 5px;
-
-    padding: 3px 8px;
-
-    margin: -3px -8px;
-
-    cursor: text;
-
-    transition: background .15s, border-color .15s, box-shadow .15s;
-
-}
-
-
-[contenteditable="true"]:hover {
-
-    border-color: var(--azul);
-
-    background: #f5fbfe;
-
-    box-shadow: 0 0 0 3px rgba(0,120,184,.08);
-
-}
-
-
-[contenteditable="true"]:focus {
-
-    border-color: var(--azul);
-
-    border-style: solid;
-
-    background: #eef8fd;
-
-    box-shadow: 0 0 0 3px rgba(0,120,184,.15);
-
-}
-
-
-[contenteditable="true"]:empty:before {
-
-    content: attr(data-placeholder);
-
-    color: #9aa7ae;
-
-}
-
-/* pequeno lápis indicando que o campo é editável */
-.info-campo .valor[contenteditable="true"]::after,
-.bloco-texto[contenteditable="true"]::after,
-table.pecas td[contenteditable="true"]::after {
-
-    content: "✎";
-
-    position: absolute;
-
-    top: 3px;
-    right: 6px;
-
-    font-size: 10px;
-
-    color: var(--azul);
-
-    opacity: 0;
-
-    transition: opacity .15s;
-
-    pointer-events: none;
-
-}
-
-.info-campo .valor[contenteditable="true"],
-table.pecas td[contenteditable="true"] {
-    padding-right: 20px;
-}
-
-.info-campo .valor[contenteditable="true"]:hover::after,
-.bloco-texto[contenteditable="true"]:hover::after,
-table.pecas td[contenteditable="true"]:hover::after {
-
-    opacity: .6;
-
-}
-
-
-/* =========================================================
-   CONTEÚDO
-========================================================= */
-
-.conteudo {
-
-    padding: 30px 42px 40px;
-
-}
-
-
-.secao {
-
-    margin-top: 26px;
-
-}
-
-
-.titulo-secao {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 11px;
-
-    margin-bottom: 15px;
-
-}
-
-
-.titulo-icone {
-
-    width: 30px;
-    height: 30px;
-
-    border-radius: 50%;
-
-    background: var(--azul);
-
-    color: white;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    font-weight: bold;
-
-    font-size: 13px;
-
-    flex-shrink: 0;
-
-}
-
-
-.titulo-secao h3 {
-
-    font-size: 17px;
-
-    color: var(--azul-escuro);
-
-}
-
-
-.linha {
-
-    height: 2px;
-
-    background: #e4e9ec;
-
-    margin-top: 8px;
-
-    flex: 1;
-
-}
-
-
-/* =========================================================
-   GRID DE INFORMAÇÕES
-========================================================= */
-
-.info-grid {
-
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 16px 30px;
-
-}
-
-
-.info-campo {
-
-    border-bottom: 1px solid #e6ebee;
-
-    padding-bottom: 10px;
-
-}
-
-
-.info-campo label {
-
-    display: block;
-
-    font-size: 11px;
-
-    font-weight: 800;
-
-    color: var(--azul);
-
-    text-transform: uppercase;
-
-    letter-spacing: .4px;
-
-    margin-bottom: 4px;
-
-}
-
-
-.info-campo .valor {
-
-    font-size: 14px;
-
-    color: #2c363d;
-
-}
-
-
-/* =========================================================
-   BLOCO DE TEXTO
-========================================================= */
-
-.bloco-texto {
-
-    background: #f7f9fa;
-
-    border-left: 4px solid var(--azul);
-
-    padding: 16px 18px;
-
-    font-size: 13.5px;
-
-    line-height: 1.65;
-
-    color: #3f4c54;
-
-}
-
-
-/* =========================================================
-   TABELAS
-========================================================= */
-
-.tabela-wrap {
-
-    overflow-x: auto;
-
-}
-
-table.pecas {
-
-    width: 100%;
-
-    border-collapse: collapse;
-
-    font-size: 13px;
-
-}
-
-table.pecas th {
-
-    text-align: left;
-
-    font-size: 11px;
-
-    text-transform: uppercase;
-
-    letter-spacing: .3px;
-
-    color: var(--azul);
-
-    padding: 8px 10px;
-
-    border-bottom: 2px solid var(--azul-claro);
-
-}
-
-table.pecas td {
-
-    padding: 10px 10px;
-
-    border-bottom: 1px solid #e6ebee;
-
-    color: #2c363d;
-
-}
-
-
-/* =========================================================
-   GALERIA DE IMAGENS
-========================================================= */
-
-.galeria {
-
-    display: grid;
-
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 20px;
-
-}
-
-
-.foto-bloco {
-
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-
-}
-
-
-.foto-slot {
-
-    position: relative;
-
-    width: 100%;
-    height: 180px;
-
-    min-width: 140px;
-    min-height: 120px;
-    max-width: 100%;
-
-    border-radius: 7px;
-
-    background: #e2e7ea;
-
-    border: 1px solid #dce3e7;
-
-    overflow: hidden;
-
-    resize: both;
-
-}
-
-
-.foto-placeholder {
-
-    position: absolute;
-
-    inset: 0;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: center;
-
-    align-items: center;
-
-    text-align: center;
-
-    color: #75828a;
-
-    padding: 12px;
-
-}
-
-
-.foto-placeholder-icon {
-
-    font-size: 32px;
-
-    margin-bottom: 8px;
-
-    opacity: .7;
-
-}
-
-
-.foto-placeholder span {
-
-    font-size: 10.5px;
-
-}
-
-
-.foto-upload {
-
-    margin-top: 10px;
-
-    padding: 7px 12px;
-
-    background: var(--azul);
-
-    color: white;
-
-    border-radius: 4px;
-
-    cursor: pointer;
-
-    font-size: 10.5px;
-
-    font-weight: bold;
-
-}
-
-
-.foto-upload:hover {
-
-    background: #005e91;
-
-}
-
-
-.foto-upload input {
-
-    display: none;
-
-}
-
-
-.foto-slot img {
-
-    display: none;
-
-    position: absolute;
-
-    inset: 0;
-
-    width: 100%;
-
-    height: 100%;
-
-    object-fit: cover;
-
-    transform-origin: center center;
-
-    transition: transform .06s ease-out;
-
-    touch-action: none;
-
-    cursor: default;
-
-}
-
-.foto-slot.tem-imagem img.pode-arrastar {
-
-    cursor: grab;
-
-}
-
-.foto-slot.tem-imagem img.arrastando {
-
-    cursor: grabbing;
-
-    transition: none;
-
-}
-
-
-.foto-zoom-controles {
-
-    display: none;
-
-    position: absolute;
-
-    left: 50%;
-
-    bottom: 8px;
-
-    transform: translateX(-50%);
-
-    z-index: 6;
-
-    align-items: center;
-
-    gap: 2px;
-
-    background: rgba(16,33,45,.72);
-
-    border-radius: 20px;
-
-    padding: 4px 6px;
-
-}
-
-.foto-slot.tem-imagem .foto-zoom-controles {
-
-    display: flex;
-
-}
-
-.foto-zoom-controles button {
-
-    width: 22px;
-
-    height: 22px;
-
-    border: none;
-
-    border-radius: 50%;
-
-    background: rgba(255,255,255,.15);
-
-    color: white;
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    line-height: 1;
-
-    cursor: pointer;
-
-}
-
-.foto-zoom-controles button:hover {
-
-    background: rgba(255,255,255,.3);
-
-}
-
-.foto-zoom-controles .foto-zoom-nivel {
-
-    color: white;
-
-    font-size: 9.5px;
-
-    min-width: 32px;
-
-    text-align: center;
-
-}
-
-.foto-zoom-controles .foto-zoom-reset {
-
-    font-size: 10px;
-
-}
-
-
-.foto-slot.tem-imagem img {
-
-    display: block;
-
-}
-
-
-.foto-slot.tem-imagem .foto-placeholder {
-
-    display: none;
-
-}
-
-
-.foto-resize-dica {
-
-    position: absolute;
-
-    right: 3px;
-
-    bottom: 2px;
-
-    font-size: 9px;
-
-    color: rgba(255,255,255,.85);
-
-    background: rgba(0,0,0,.35);
-
-    padding: 1px 4px;
-
-    border-radius: 3px;
-
-    pointer-events: none;
-
-}
-
-.foto-slot:not(.tem-imagem) .foto-resize-dica {
-
-    display: none;
-
-}
-
-
-.foto-remover {
-
-    display: none;
-
-    position: absolute;
-
-    right: 8px;
-
-    top: 8px;
-
-    z-index: 5;
-
-    border: none;
-
-    padding: 5px 8px;
-
-    border-radius: 4px;
-
-    background: rgba(0,0,0,.75);
-
-    color: white;
-
-    cursor: pointer;
-
-    font-size: 9px;
-
-    font-weight: bold;
-
-}
-
-
-.foto-slot.tem-imagem .foto-remover {
-
-    display: block;
-
-}
-
-
-.foto-legenda {
-
-    font-size: 11.5px;
-
-    color: #3f4c54;
-
-    background: #f7f9fa;
-
-    border: 1px dashed #c7d2d8;
-
-    border-radius: 5px;
-
-    padding: 6px 8px;
-
-    min-height: 30px;
-
-}
-
-.foto-legenda:hover {
-    border-color: var(--azul);
-    background: #f5fbfe;
-}
-
-.foto-legenda:focus {
-    border-color: var(--azul);
-    border-style: solid;
-    background: #eef8fd;
-    box-shadow: 0 0 0 3px rgba(0,120,184,.15);
-    outline: none;
-}
-
-.foto-legenda:empty:before {
-    content: attr(data-placeholder);
-    color: #9aa7ae;
-}
-
-
-.btn-excluir-campo {
-
-    align-self: flex-end;
-
-    border: none;
-
-    background: transparent;
-
-    color: var(--vermelho);
-
-    font-size: 10.5px;
-
-    cursor: pointer;
-
-    padding: 2px 4px;
-
-    text-decoration: underline;
-
-}
-
-.btn-excluir-campo:hover {
-
-    color: #8f1f1f;
-
-}
-
-
-.btn-add-foto {
-
-    margin-top: 14px;
-
-    border: 1px dashed #9ed8f4;
-
-    background: var(--azul-claro);
-
-    color: var(--azul);
-
-    padding: 10px 16px;
-
-    border-radius: 6px;
-
-    cursor: pointer;
-
-    font-size: 12px;
-
-    font-weight: bold;
-
-}
-
-
-.btn-add-foto:hover {
-
-    background: #d7edf9;
-
-}
-
-
-/* =========================================================
-   ASSINATURAS
-========================================================= */
-
-.assinaturas-grid {
-
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 20px;
-
-}
-
-.assinatura-bloco {
-
-    border: 1px solid #e1e6e9;
-
-    border-radius: 8px;
-
-    padding: 18px;
-
-    background: var(--cinza-1);
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    justify-content: center;
-
-    min-height: 120px;
-
-}
-
-.btn-assinar {
-
-    border: none;
-
-    padding: 12px 20px;
-
-    background: var(--azul);
-
-    color: white;
-
-    border-radius: 6px;
-
-    cursor: pointer;
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-}
-
-.btn-assinar:hover {
-
-    background: #005e91;
-
-}
-
-.assinatura-assinada {
-
-    width: 100%;
-
-}
-
-.assinatura-assinada-topo {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-
-    color: var(--verde);
-
-    font-size: 12px;
-
-    font-weight: bold;
-
-    margin-bottom: 10px;
-
-}
-
-.assinatura-info {
-
-    font-size: 12.5px;
-
-    line-height: 1.7;
-
-    color: #2c363d;
-
-    margin-bottom: 10px;
-
-}
-
-.assinatura-info strong {
-    color: var(--azul-escuro);
-}
-
-.assinatura-imagem-wrap {
-
-    background: white;
-
-    border: 1px solid #e1e6e9;
-
-    border-radius: 6px;
-
-    padding: 8px;
-
-    margin-bottom: 10px;
-
-}
-
-.assinatura-imagem-wrap img {
-
-    display: block;
-
-    width: 100%;
-
-    max-height: 90px;
-
-    object-fit: contain;
-
-}
-
-.btn-reassinar {
-
-    border: 1px solid #c7d2d8;
-
-    background: white;
-
-    color: var(--azul-escuro);
-
-    padding: 6px 10px;
-
-    border-radius: 5px;
-
-    cursor: pointer;
-
-    font-size: 11px;
-
-}
-
-.btn-reassinar:hover {
-
-    background: var(--cinza-2);
-
-}
-
-
-/* =========================================================
-   MODAL DE ASSINATURA
-========================================================= */
-
-.modal-overlay {
-
-    display: none;
-
-    position: fixed;
-
-    inset: 0;
-
-    background: rgba(16, 33, 45, .55);
-
-    align-items: center;
-
-    justify-content: center;
-
-    z-index: 999;
-
-    padding: 20px;
-
-}
-
-.modal-overlay.aberto {
-
-    display: flex;
-
-}
-
-.modal-box {
-
-    position: relative;
-
-    width: 100%;
-
-    max-width: 460px;
-
-    background: white;
-
-    border-radius: 10px;
-
-    padding: 28px;
-
-    box-shadow: 0 20px 60px rgba(0,0,0,.3);
-
-}
-
-.modal-fechar {
-
-    position: absolute;
-
-    top: 14px;
-
-    right: 14px;
-
-    border: none;
-
-    background: var(--cinza-2);
-
-    color: var(--azul-escuro);
-
-    width: 26px;
-
-    height: 26px;
-
-    border-radius: 50%;
-
-    cursor: pointer;
-
-    font-size: 12px;
-
-}
-
-.modal-box h3 {
-
-    color: var(--azul-escuro);
-
-    font-size: 17px;
-
-    margin-bottom: 4px;
-
-}
-
-.modal-dica {
-
-    font-size: 12px;
-
-    color: var(--cinza-3);
-
-    margin-bottom: 14px;
-
-}
-
-.modal-step label {
-
-    display: block;
-
-    font-size: 11px;
-
-    font-weight: 800;
-
-    color: var(--azul);
-
-    text-transform: uppercase;
-
-    letter-spacing: .4px;
-
-    margin: 14px 0 5px;
-
-}
-
-.modal-step input {
-
-    width: 100%;
-
-    font-size: 13.5px;
-
-    padding: 9px 11px;
-
-    border: 1px solid #d3dade;
-
-    border-radius: 5px;
-
-    color: #2c363d;
-
-    font-family: inherit;
-
-}
-
-.modal-step input:focus {
-
-    outline: none;
-
-    border-color: var(--azul);
-
-    box-shadow: 0 0 0 3px rgba(0,120,184,.12);
-
-}
-
-.modal-erro {
-
-    color: var(--vermelho);
-
-    font-size: 11.5px;
-
-    margin-top: 10px;
-
-    display: none;
-
-}
-
-.modal-erro.mostrar {
-
-    display: block;
-
-}
-
-.btn-avancar,
-.btn-confirmar {
-
-    width: 100%;
-
-    margin-top: 22px;
-
-    border: none;
-
-    padding: 12px;
-
-    background: var(--azul);
-
-    color: white;
-
-    border-radius: 6px;
-
-    cursor: pointer;
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-}
-
-.btn-avancar:hover,
-.btn-confirmar:hover {
-
-    background: #005e91;
-
-}
-
-#canvas-assinatura {
-
-    width: 100%;
-
-    height: 200px;
-
-    border: 1.5px dashed #9ed8f4;
-
-    border-radius: 6px;
-
-    background: #fbfdfe;
-
-    touch-action: none;
-
-    cursor: crosshair;
-
-}
-
-.modal-acoes-assinatura {
-
-    display: flex;
-
-    gap: 10px;
-
-    margin-top: 14px;
-
-}
-
-.btn-limpar {
-
-    flex: 1;
-
-    border: 1px solid #d3dade;
-
-    background: white;
-
-    color: var(--azul-escuro);
-
-    padding: 10px;
-
-    border-radius: 6px;
-
-    cursor: pointer;
-
-    font-size: 12.5px;
-
-}
-
-.btn-limpar:hover {
-
-    background: var(--cinza-2);
-
-}
-
-.modal-voltar {
-
-    display: inline-block;
-
-    margin-top: 12px;
-
-    font-size: 11.5px;
-
-    color: var(--azul);
-
-    cursor: pointer;
-
-    text-decoration: underline;
-
-}
-
-
-/* =========================================================
-   TELA INICIAL
-========================================================= */
-
-#tela-inicial {
-
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 2000;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    overflow: hidden;
-
-}
-
-.tela-svg {
-
-    position: absolute;
-
-    inset: 0;
-
-    width: 100%;
-
-    height: 100%;
-
-}
-
-.tela-overlay {
-
-    position: absolute;
-
-    inset: 0;
-
-    background: radial-gradient(
-        ellipse at center,
-        rgba(10,15,20,.18) 0%,
-        rgba(8,12,16,.55) 62%,
-        rgba(5,8,10,.78) 100%
-    );
-
-}
-
-.tela-conteudo {
-
-    position: relative;
-
-    z-index: 2;
-
-    text-align: center;
-
-    color: white;
-
-    padding: 40px;
-
-    max-width: 560px;
-
-}
-
-.tela-selo {
-
-    width: 72px;
-    height: 72px;
-
-    margin: 0 auto 24px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: 2px solid rgba(255,255,255,.55);
-
-    border-radius: 50%;
-
-    background: rgba(255,255,255,.08);
-
-}
-
-.tela-selo svg {
-
-    width: 36px;
-    height: 36px;
-
-}
-
-.tela-titulo {
-
-    font-size: 42px;
-
-    font-weight: 800;
-
-    letter-spacing: 3px;
-
-    text-transform: uppercase;
-
-    text-shadow: 0 4px 18px rgba(0,0,0,.5);
-
-}
-
-.tela-subtitulo {
-
-    margin-top: 12px;
-
-    font-size: 14px;
-
-    font-weight: 700;
-
-    letter-spacing: 7px;
-
-    color: #cfe4f0;
-
-    text-transform: uppercase;
-
-}
-
-.tela-linha {
-
-    width: 70px;
-    height: 2px;
-
-    background: rgba(255,255,255,.5);
-
-    margin: 26px auto;
-
-}
-
-.tela-btn-iniciar {
-
-    padding: 15px 40px;
-
-    border: 1.5px solid rgba(255,255,255,.65);
-
-    border-radius: 30px;
-
-    background: rgba(255,255,255,.08);
-
-    backdrop-filter: blur(4px);
-
-    -webkit-backdrop-filter: blur(4px);
-
-    color: white;
-
-    font-size: 13.5px;
-
-    font-weight: 700;
-
-    letter-spacing: 2.5px;
-
-    text-transform: uppercase;
-
-    cursor: pointer;
-
-    transition: background .2s, border-color .2s, transform .15s;
-
-}
-
-.tela-btn-iniciar:hover {
-
-    background: var(--azul);
-
-    border-color: var(--azul);
-
-    transform: translateY(-2px);
-
-}
-
-@media (max-width: 620px) {
-
-    .tela-titulo {
-        font-size: 30px;
-        letter-spacing: 2px;
-    }
-
-    .tela-subtitulo {
-        font-size: 12px;
-        letter-spacing: 5px;
-    }
-
-    .tela-conteudo {
-        padding: 24px;
-    }
-
-}
-
-
-/* =========================================================
-   BOTÃO DE IMPRESSÃO
-========================================================= */
-
-.acoes {
-
-    max-width: 1000px;
-
-    margin: 20px auto 6px;
-
-    display: flex;
-
-    justify-content: center;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    gap: 8px;
-
-}
-
-
-.btn-imprimir {
-
-    border: none;
-
-    padding: 13px 22px;
-
-    background: #10212d;
-
-    color: white;
-
-    border-radius: 5px;
-
-    cursor: pointer;
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    box-shadow: 0 4px 12px rgba(0,0,0,.15);
-
-}
-
-
-.btn-imprimir:hover {
-
-    background: #0078b8;
-
-}
-
-.acoes-dica {
-
-    font-size: 11px;
-
-    color: #6b7981;
-
-    max-width: 420px;
-
-    text-align: center;
-
-    line-height: 1.5;
-
-}
-
-
-/* =========================================================
-   RESPONSIVO
-========================================================= */
-
-@media(max-width: 750px) {
-
-    body {
-        padding: 10px;
-    }
-
-    .header {
-        padding: 25px;
-        flex-direction: column;
-    }
-
-    .aviso-edicao {
-        margin-left: 25px;
-        margin-right: 25px;
-    }
-
-    .conteudo {
-        padding: 25px;
-    }
-
-    .info-grid,
-    .galeria,
-    .assinaturas-grid {
-        grid-template-columns: 1fr;
-    }
-
-}
-
-
-/* =========================================================
-   IMPRESSÃO
-========================================================= */
-
-@media print {
-
-    *,
-    *::before,
-    *::after {
-
-        -webkit-print-color-adjust: exact !important;
-
-        print-color-adjust: exact !important;
-
-    }
-
-
-    #tela-inicial {
-
-        display: none !important;
-
-    }
-
-
-    #conteudo-laudo {
-
-        display: block !important;
-
-    }
-
-
-    html {
-
-        background: white !important;
-
-    }
-
-
-    body {
-
-        padding: 0 !important;
-
-        margin: 0 !important;
-
-        background: white !important;
-
-    }
-
-
-    .laudo {
-
-        max-width: none !important;
-
-        width: 100% !important;
-
-        box-shadow: none !important;
-
-        margin: 0 !important;
-
-    }
-
-
-    .acoes,
-    .no-print,
-    .aviso-edicao,
-    .modal-overlay {
-
-        display: none !important;
-
-    }
-
-
-    .foto-upload,
-    .foto-remover,
-    .btn-add-foto,
-    .btn-reassinar {
-
-        display: none !important;
-
-    }
-
-    .foto-slot {
-
-        resize: none !important;
-
-        overflow: hidden !important;
-
-        height: 180px !important;
-
-    }
-
-
-    [contenteditable="true"],
-    .foto-legenda {
-
-        border-color: transparent !important;
-
-        border-width: 0 !important;
-
-        background: transparent !important;
-
-        box-shadow: none !important;
-
-        padding-right: 8px !important;
-
-    }
-
-    [contenteditable="true"]::after {
-
-        display: none !important;
-
-    }
-
-
-    .header {
-
-        background:
-            linear-gradient(
-                135deg,
-                #10212d 0%,
-                #162e3d 65%,
-                #0078b8 100%
-            ) !important;
-
-    }
-
-
-    .secao {
-
-        break-inside: avoid;
-
-        page-break-inside: avoid;
-
-    }
-
-
-    .foto-slot,
-    .foto-bloco,
-    .assinatura-bloco {
-
-        break-inside: avoid;
-
-        page-break-inside: avoid;
-
-    }
-
-
-    @page {
-
-        size: A4;
-
-        margin: 10mm;
-
-    }
-
-}
-
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --bg:#e9edf1;
+  --panel:#ffffff;
+  --ink:#1c2530;
+  --muted:#6b7684;
+  --line:#d7dce2;
+  --accent:#e8590c;
+  --accent-dark:#c94a08;
+  --accent-soft:#fde6d5;
+  --teal:#1f7a6c;
+  --teal-soft:#dcf1ec;
+  --danger:#c23b3b;
+  --danger-soft:#fbe4e4;
+  --slate:#4a5a72;
+  --slate-soft:#e4e8ee;
+  --highlight:#fff1b8;
+  --ok:#1f7a34;
+  --ok-soft:#dff3e0;
+  --display:'Oswald',sans-serif;
+  --body:'Barlow',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;}
+#nors-app{
+  font-family:var(--body);
+  color:var(--ink);
+  background:var(--bg);
+  min-height:100%;
+  padding:0 0 48px 0;
+}
+#nors-app .stripe{
+  height:6px;
+  background:repeating-linear-gradient(45deg,var(--accent) 0 14px,var(--accent-dark) 14px 28px);
+}
+.nors-header{
+  background:var(--panel);
+  border-bottom:1px solid var(--line);
+  padding:18px 24px 16px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:14px;
+}
+.nors-title h1{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:26px;
+  letter-spacing:1px;
+  margin:0;
+  text-transform:uppercase;
+  color:var(--ink);
+}
+.nors-title h1 span{color:var(--accent);}
+.nors-title p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  letter-spacing:.3px;
+}
+.nors-controls{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.year-stepper{
+  display:flex;
+  align-items:center;
+  background:var(--slate-soft);
+  border-radius:6px;
+  overflow:hidden;
+  font-family:var(--mono);
+}
+.year-stepper button{
+  border:none;
+  background:transparent;
+  color:var(--slate);
+  font-size:16px;
+  padding:6px 12px;
+  cursor:pointer;
+}
+.year-stepper button:hover{background:var(--line);}
+.year-stepper .yr{
+  padding:6px 4px;
+  font-weight:600;
+  font-size:15px;
+  min-width:52px;
+  text-align:center;
+}
+.branch-select{
+  font-family:var(--body);
+  font-size:12.5px;
+  font-weight:600;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--ink);
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  max-width:170px;
+}
+.branch-select:focus{outline:2px solid var(--accent);outline-offset:-1px;}
+.save-pill{
+  font-family:var(--mono);
+  font-size:11px;
+  padding:5px 10px;
+  border-radius:20px;
+  background:var(--teal-soft);
+  color:var(--teal);
+  letter-spacing:.3px;
+  white-space:nowrap;
+}
+.save-pill.saving{background:var(--accent-soft);color:var(--accent-dark);}
+.btn-ghost{
+  font-family:var(--body);
+  font-size:12px;
+  font-weight:600;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--ink);
+  padding:6px 12px;
+  border-radius:6px;
+  cursor:pointer;
+}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent-dark);}
+
+.nors-tabs{
+  display:flex;
+  gap:2px;
+  padding:14px 24px 0;
+  background:var(--bg);
+}
+.nors-tab{
+  font-family:var(--display);
+  font-size:13px;
+  letter-spacing:.5px;
+  padding:9px 18px;
+  background:var(--slate-soft);
+  color:var(--slate);
+  border:none;
+  border-top:3px solid transparent;
+  border-radius:6px 6px 0 0;
+  cursor:pointer;
+  text-transform:uppercase;
+}
+.nors-tab.active{
+  background:var(--panel);
+  color:var(--accent-dark);
+  border-top:3px solid var(--accent);
+}
+
+.nors-panel{
+  background:var(--panel);
+  margin:0 24px;
+  border:1px solid var(--line);
+  border-radius:0 8px 8px 8px;
+  overflow:hidden;
+}
+.table-scroll{overflow-x:auto;}
+table.nors-table{
+  border-collapse:collapse;
+  width:100%;
+  font-family:var(--mono);
+  font-size:12.5px;
+}
+table.nors-table th, table.nors-table td{
+  border:1px solid var(--line);
+  padding:0;
+}
+.th-label, .td-label{
+  position:sticky;
+  left:0;
+  z-index:3;
+  background:var(--panel);
+  text-align:left;
+  padding:7px 10px !important;
+  font-family:var(--body);
+  font-weight:500;
+  font-size:12.5px;
+  min-width:250px;
+  max-width:250px;
+  white-space:normal;
+  line-height:1.25;
+}
+.th-label{z-index:5;background:#f2f4f6;}
+.month-head{
+  text-align:center;
+  font-family:var(--display);
+  font-size:13px;
+  letter-spacing:1px;
+  padding:8px 4px !important;
+  color:#fff;
+}
+.week-head{
+  text-align:center;
+  padding:5px 2px 6px !important;
+  background:#f2f4f6;
+  min-width:64px;
+}
+.week-head .wlabel{
+  font-family:var(--display);
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:.5px;
+  display:block;
+  margin-bottom:3px;
+}
+.week-head input{
+  width:100%;
+  border:none;
+  background:transparent;
+  text-align:center;
+  font-family:var(--mono);
+  font-size:10px;
+  color:var(--muted);
+  padding:1px;
+}
+.week-head .wdate{
+  display:block;
+  font-family:var(--mono);
+  font-size:10px;
+  color:var(--muted);
+  padding:1px;
+}
+.fech-head{
+  background:var(--highlight);
+  min-width:70px;
+}
+.fech-head .wlabel{color:#8a6d00;}
+.month-sep{border-left:2px solid var(--ink) !important;}
+input.cell-num{
+  width:100%;
+  border:none;
+  background:transparent;
+  text-align:center;
+  font-family:var(--mono);
+  font-size:12.5px;
+  padding:7px 2px;
+  color:var(--ink);
+}
+input.cell-num:focus, .week-head input:focus{
+  outline:2px solid var(--accent);
+  outline-offset:-2px;
+  background:#fff;
+}
+td.fech-cell{background:#fffdf3;}
+td.fech-cell input{font-weight:600;color:#8a6d00;}
+.fech-readonly{
+  display:block;
+  width:100%;
+  text-align:center;
+  font-family:var(--mono);
+  font-size:12.5px;
+  font-weight:600;
+  color:#8a6d00;
+  padding:7px 2px;
+}
+tr.group-row td{
+  padding:6px 10px !important;
+  font-family:var(--display);
+  font-size:12px;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+  color:#fff;
+  position:sticky;
+  left:0;
+}
+tr.metric-row .td-label{border-left:4px solid var(--grp-color,var(--slate));}
+tr.metric-row:nth-child(even) td:not(.td-label):not(.fech-cell){background:#fafbfc;}
+
+/* Meta Porta a Porta: abaixo de 150 min = verde, 150 min ou mais = vermelho */
+td.pm-ok{background:var(--ok-soft) !important;}
+td.pm-bad{background:var(--danger-soft) !important;}
+td.pm-ok input.cell-num, td.pm-ok .fech-readonly{color:var(--ok);font-weight:700;}
+td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weight:700;}
+.group-note{font-weight:400;font-size:10.5px;letter-spacing:.3px;opacity:.85;text-transform:none;margin-left:8px;}
+
+.comments-wrap{padding:18px 24px 4px;}
+.comments-wrap h2{
+  font-family:var(--display);
+  font-size:16px;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  margin:0 0 4px;
+}
+.comments-wrap>p{color:var(--muted);font-size:12.5px;margin:0 0 14px;}
+.comment-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:8px;
+  margin-bottom:12px;
+  overflow:hidden;
+}
+.comment-card summary{
+  cursor:pointer;
+  padding:10px 14px;
+  font-weight:600;
+  font-size:13px;
+  background:#f6f7f9;
+  list-style:none;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.comment-card summary::-webkit-details-marker{display:none;}
+.comment-card summary::before{content:'▸';color:var(--accent);font-size:11px;}
+.comment-card[open] summary::before{content:'▾';}
+.comment-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--line);
+}
+.comment-grid div{background:var(--panel);padding:10px;}
+.comment-grid label{
+  display:block;
+  font-family:var(--display);
+  font-size:10.5px;
+  letter-spacing:.5px;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-bottom:5px;
+}
+.comment-grid textarea{
+  width:100%;
+  min-height:56px;
+  border:1px solid var(--line);
+  border-radius:5px;
+  padding:6px 8px;
+  font-family:var(--body);
+  font-size:12.5px;
+  resize:vertical;
+  color:var(--ink);
+}
+.comment-grid textarea:focus{outline:2px solid var(--accent);outline-offset:-1px;}
+.footer-actions{
+  padding:16px 24px 0;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+@media (max-width:640px){
+  .nors-header{padding:14px 14px;}
+  .nors-tabs, .nors-panel, .comments-wrap, .footer-actions{margin-left:0;margin-right:0;padding-left:14px;padding-right:14px;}
+  .comment-grid{grid-template-columns:1fr;}
+}
+
+/* Navegação entre páginas (Início / Reporte VPS / Kaizens Destaque) */
+.page-nav{
+  display:none;
+  gap:2px;
+  background:var(--ink);
+  padding:0 24px;
+}
+.page-nav-btn{
+  font-family:var(--display);
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  font-size:12.5px;
+  color:#aab4c0;
+  background:transparent;
+  border:none;
+  border-bottom:3px solid transparent;
+  padding:13px 18px;
+  cursor:pointer;
+}
+.page-nav-btn:hover{color:#fff;}
+.page-nav-btn.active{color:#fff;border-bottom-color:var(--accent);}
+
+/* Página Início */
+.home-page{
+  position:relative;
+  min-height:min(720px, 92vh);
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  padding:60px 24px 80px;
+  background:
+    linear-gradient(180deg, rgba(12,16,20,.20) 0%, rgba(10,13,17,.55) 55%, rgba(8,10,14,.92) 100%),
+    url('https://commons.wikimedia.org/wiki/Special:FilePath/Volvo_FH_540_at_IAA_2014._Free_images_Spielvogel.jpg') center 38%/cover no-repeat;
+  background-color:#11151a;
+}
+.home-inner{text-align:center;max-width:560px;}
+.home-eyebrow{
+  font-family:var(--display);
+  letter-spacing:3px;
+  font-size:12.5px;
+  color:#f2a35c;
+  text-transform:uppercase;
+  margin:0 0 14px;
+}
+.home-cta{
+  font-family:var(--display);
+  text-transform:uppercase;
+  letter-spacing:1.3px;
+  font-size:16px;
+  font-weight:700;
+  color:#fff;
+  background:var(--accent);
+  border:none;
+  padding:17px 36px;
+  border-radius:6px;
+  cursor:pointer;
+  box-shadow:0 10px 26px rgba(232,89,12,.45);
+}
+.home-cta:hover{background:var(--accent-dark);}
+@media (max-width:640px){
+  .home-page{padding:40px 18px 56px;}
+  .home-cta{padding:15px 26px;font-size:14.5px;}
+}
+
+/* Página Kaizens Destaque */
+.kaizen-year-note{font-family:var(--mono);font-size:11px;color:var(--muted);}
+.kaizen-wrap{padding:18px 24px 40px;}
+.kaizen-wrap>p{color:var(--muted);font-size:12.5px;margin:0 0 14px;}
+.kaizen-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+  gap:14px;
+}
+.kaizen-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+.kaizen-card-head{
+  background:var(--slate);
+  color:#fff;
+  padding:8px 12px;
+  font-family:var(--display);
+  font-size:12px;
+  letter-spacing:.6px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.kaizen-card-head .wdate{font-family:var(--mono);font-size:10.5px;color:#c9d2dc;}
+.kaizen-photo-zone{
+  position:relative;
+  background:#f2f4f6;
+  display:flex;
+  flex-wrap:wrap;
+  align-content:flex-start;
+  gap:6px;
+  padding:8px;
+  border-bottom:1px solid var(--line);
+  min-height:96px;
+}
+.kaizen-photo-thumb{
+  position:relative;
+  width:70px;
+  height:70px;
+  border-radius:5px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:#fff;
+  cursor:pointer;
+}
+.kaizen-photo-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.kaizen-photo-label{
+  font-family:var(--body);
+  font-size:11.5px;
+  color:var(--muted);
+  text-align:center;
+  cursor:pointer;
+  padding:6px;
+  width:70px;
+  height:70px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border:1px dashed var(--line);
+  border-radius:5px;
+  background:#fff;
+}
+.kaizen-photo-label.label-empty{width:100%;height:80px;}
+.kaizen-photo-label span{display:block;font-family:var(--display);font-size:20px;color:var(--accent);margin-bottom:2px;line-height:1;}
+.kaizen-photo-input{display:none;}
+.kaizen-photo-remove{
+  position:absolute;
+  top:2px;right:2px;
+  background:rgba(20,24,30,.7);
+  color:#fff;
+  border:none;
+  border-radius:50%;
+  width:18px;height:18px;
+  font-size:11px;
+  cursor:pointer;
+  line-height:1;
+  z-index:2;
+}
+
+/* Lightbox para ampliar fotos (Kaizens e Acidentes) */
+.nors-lightbox{
+  position:fixed;
+  inset:0;
+  background:rgba(10,13,17,.88);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+  padding:32px;
+  cursor:zoom-out;
+}
+.nors-lightbox img{max-width:100%;max-height:100%;border-radius:6px;box-shadow:0 12px 40px rgba(0,0,0,.5);}
+.nors-lightbox-close{
+  position:absolute;
+  top:18px;right:24px;
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  border:none;
+  border-radius:50%;
+  width:34px;height:34px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+/* Página Acidentes */
+.acidentes-wrap{padding:18px 24px 40px;}
+.acidentes-wrap>p{color:var(--muted);font-size:12.5px;margin:0 0 14px;}
+.acidentes-controls{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:14px;
+  margin-bottom:16px;
+}
+.acidentes-controls .field-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.acidentes-controls label.text-label{
+  font-family:var(--display);
+  font-size:11px;
+  letter-spacing:.4px;
+  color:var(--muted);
+  text-transform:uppercase;
+}
+.acidentes-controls input[type="url"]{
+  font-family:var(--mono);
+  font-size:12.5px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:7px 10px;
+  min-width:260px;
+  flex:1;
+}
+.acidentes-controls input[type="url"]:focus{outline:2px solid var(--accent);outline-offset:-1px;}
+.acidentes-upload-label{
+  font-family:var(--body);
+  font-size:12px;
+  font-weight:600;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--ink);
+  padding:7px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  display:inline-block;
+}
+.acidentes-upload-label:hover{border-color:var(--accent);color:var(--accent-dark);}
+.acidentes-or{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;}
+.acidentes-display{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:8px;
+  min-height:420px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.acidentes-display iframe{width:100%;height:640px;border:none;display:block;}
+.acidentes-display img{width:100%;max-height:720px;object-fit:contain;display:block;cursor:zoom-in;}
+.acidentes-display embed{width:100%;height:720px;}
+.acidentes-empty{
+  color:var(--muted);
+  font-size:13px;
+  text-align:center;
+  padding:60px 20px;
+}
+.acidentes-meta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+.kaizen-text{
+  width:100%;
+  border:none;
+  min-height:74px;
+  padding:10px 12px;
+  font-family:var(--body);
+  font-size:12.5px;
+  resize:vertical;
+  color:var(--ink);
+}
+.kaizen-text:focus{outline:2px solid var(--accent);outline-offset:-2px;}
 </style>
 
-</head>
+<div id="nors-app">
+  <div class="stripe"></div>
 
+  <div class="page-nav" id="pageNav">
+    <button class="page-nav-btn" data-page="home">Início</button>
+    <button class="page-nav-btn" data-page="vps">Reporte VPS</button>
+    <button class="page-nav-btn" data-page="kaizen">Kaizens Destaque</button>
+    <button class="page-nav-btn" data-page="acidentes">Acidentes</button>
+  </div>
 
-<body>
+  <div id="page-home" class="home-page">
+    <div class="home-inner">
+      <p class="home-eyebrow">Reporte VPS Nors CO</p>
+      <button class="home-cta" id="btnStartVps">Iniciar Reporte VPS</button>
+    </div>
+  </div>
 
-
-<!-- =========================================================
-     TELA INICIAL
-========================================================= -->
-
-<div id="tela-inicial">
-
-    <svg class="tela-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-
-        <defs>
-            <linearGradient id="ceuGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#0a1626"/>
-                <stop offset="34%" stop-color="#123650"/>
-                <stop offset="56%" stop-color="#2f6a86"/>
-                <stop offset="71%" stop-color="#e08a4d"/>
-                <stop offset="79%" stop-color="#f6b56a"/>
-                <stop offset="82%" stop-color="#2a3238"/>
-                <stop offset="100%" stop-color="#14181b"/>
-            </linearGradient>
-            <radialGradient id="solGrad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#ffe9c2" stop-opacity="0.95"/>
-                <stop offset="55%" stop-color="#ffbf6b" stop-opacity="0.5"/>
-                <stop offset="100%" stop-color="#ffbf6b" stop-opacity="0"/>
-            </radialGradient>
-        </defs>
-
-        <rect x="0" y="0" width="1600" height="900" fill="url(#ceuGrad)"/>
-
-        <circle cx="800" cy="655" r="260" fill="url(#solGrad)"/>
-        <circle cx="800" cy="655" r="65" fill="#ffe6ba" opacity="0.9"/>
-
-        <path d="M0,660 L180,560 L340,630 L520,540 L700,650 L860,570 L1050,650 L1250,560 L1420,640 L1600,600 L1600,665 L0,665 Z" fill="#1b3a52" opacity="0.5"/>
-        <path d="M0,675 L220,610 L420,665 L640,600 L880,670 L1120,600 L1350,665 L1600,630 L1600,680 L0,680 Z" fill="#142838" opacity="0.75"/>
-
-        <path d="M655,680 L945,680 L1160,900 L440,900 Z" fill="#262b2f"/>
-        <path d="M792,680 L808,680 L726,900 L674,900 Z" fill="#e7c98a" opacity="0.8"/>
-
-        <g transform="translate(725,752)">
-            <rect x="-2" y="8" width="205" height="66" rx="5" fill="#0c151d"/>
-            <rect x="-72" y="-14" width="82" height="92" rx="7" fill="#0c151d"/>
-            <rect x="-59" y="-2" width="46" height="28" rx="3" fill="#e08a4d" opacity="0.85"/>
-            <circle cx="-32" cy="86" r="19" fill="#04070a"/>
-            <circle cx="-32" cy="86" r="7" fill="#3a4249"/>
-            <circle cx="62" cy="86" r="19" fill="#04070a"/>
-            <circle cx="62" cy="86" r="7" fill="#3a4249"/>
-            <circle cx="152" cy="86" r="19" fill="#04070a"/>
-            <circle cx="152" cy="86" r="7" fill="#3a4249"/>
-        </g>
-
-    </svg>
-
-    <div class="tela-overlay"></div>
-
-    <div class="tela-conteudo">
-
-        <div class="tela-selo">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L4 5V11C4 16 7.5 20.2 12 21.5C16.5 20.2 20 16 20 11V5L12 2Z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
-                <path d="M8.5 12L10.8 14.3L15.5 9.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+  <div id="page-vps" style="display:none">
+    <div class="nors-header">
+      <div class="nors-title">
+        <h1>Reporte VPS <span>Nors CO</span></h1>
+        <p id="vpsSubtitle">Controle operacional Pit Stop / Oficina</p>
+      </div>
+      <div class="nors-controls">
+        <span id="savePill" class="save-pill">salvo</span>
+        <select class="branch-select" id="branchSelect" title="Filial"></select>
+        <div class="year-stepper">
+          <button id="yrDown" title="Ano anterior">‹</button>
+          <span class="yr" id="yrLabel">2026</span>
+          <button id="yrUp" title="Próximo ano">›</button>
         </div>
-
-        <h1 class="tela-titulo">Laudo Técnico</h1>
-        <div class="tela-subtitulo">NORS CO</div>
-
-        <div class="tela-linha"></div>
-
-        <button class="tela-btn-iniciar" type="button" onclick="iniciarLaudo()">
-            ▶ Iniciar Laudo
-        </button>
-
+        <button class="btn-ghost" id="btnExport">Exportar backup</button>
+        <button class="btn-ghost" id="btnImport">Importar backup</button>
+        <input type="file" id="fileImport" accept="application/json" style="display:none">
+      </div>
     </div>
 
+    <div class="nors-tabs" id="tabs"></div>
+    <div class="nors-panel">
+      <div class="table-scroll" id="tableWrap"></div>
+    </div>
+
+    <div class="comments-wrap">
+      <h2>Comentários</h2>
+      <p>Um campo de observação por mês, para cada indicador do trimestre selecionado acima.</p>
+      <div id="commentsWrap"></div>
+    </div>
+  </div>
+
+  <div id="page-kaizen" style="display:none">
+    <div class="nors-header">
+      <div class="nors-title">
+        <h1>Kaizens <span>Destaque</span></h1>
+        <p>Foto(s) e observação por semana</p>
+      </div>
+      <div class="nors-controls">
+        <span class="kaizen-year-note">Ano <strong id="kYrLabel">2026</strong> · altere o ano na aba Reporte VPS</span>
+      </div>
+    </div>
+    <div class="nors-tabs" id="kaizenTabs"></div>
+    <div class="kaizen-wrap">
+      <p>Um ou mais destaques por semana (W). Clique numa foto para ampliar; use "+" para adicionar mais fotos.</p>
+      <div id="kaizenWrap"></div>
+    </div>
+  </div>
+
+  <div id="page-acidentes" style="display:none">
+    <div class="nors-header">
+      <div class="nors-title">
+        <h1>Painel de <span>Acidentes</span></h1>
+        <p>Dashboard BI de acidentes</p>
+      </div>
+    </div>
+    <div class="acidentes-wrap">
+      <p>Cole o link de publicação web do seu relatório Power BI (não o arquivo .pbix — ele não pode ser exibido no navegador). No Power BI Desktop: <strong>Arquivo → Publicar → Publicar na Web</strong>, ou no serviço Power BI: <strong>Arquivo → Inserir relatório → Publicar na web</strong>, e copie o link gerado (formato <span style="font-family:var(--mono)">https://app.powerbi.com/view?r=...</span>). Alternativamente, envie uma imagem/PDF exportado do dashboard.</p>
+      <div class="acidentes-controls">
+        <div class="field-group">
+          <label class="text-label">Link do dashboard</label>
+          <input type="url" id="acidentesLinkInput" placeholder="https://app.powerbi.com/view?r=...">
+          <button class="btn-ghost" id="acidentesLinkSave">Salvar link</button>
+        </div>
+        <span class="acidentes-or">ou</span>
+        <label class="acidentes-upload-label">Anexar arquivo (imagem ou PDF)
+          <input type="file" id="acidentesFileInput" accept="image/*,application/pdf" style="display:none">
+        </label>
+        <button class="btn-ghost" id="acidentesRemove">Remover dashboard</button>
+      </div>
+      <div class="acidentes-meta" id="acidentesMeta" style="display:none"></div>
+      <div class="acidentes-display" id="acidentesDisplay">
+        <span class="acidentes-empty">Nenhum dashboard anexado ainda. Cole um link ou anexe um arquivo acima.</span>
+      </div>
+    </div>
+  </div>
 </div>
 
-
-<!-- =========================================================
-     CONTEÚDO DO LAUDO
-========================================================= -->
-
-<div id="conteudo-laudo" style="display:none;">
-
-
-<div class="laudo">
-
-
-<!-- =========================================================
-     CABEÇALHO
-========================================================= -->
-
-<header class="header">
-
-
-    <div class="header-titulo">
-
-        <h1>
-
-            Laudo Técnico
-            <span class="numero-laudo" id="numero-laudo" contenteditable="true"></span>
-
-        </h1>
-
-        <p>
-
-            <strong>Chassi:</strong>
-            <span contenteditable="true" data-placeholder="Digite o chassi"></span>
-            <br>
-
-            <strong>Cliente:</strong>
-            <span contenteditable="true" data-placeholder="Digite o nome do cliente"></span>
-            <br>
-
-            <strong>Contato:</strong>
-            <span contenteditable="true" data-placeholder="Digite o telefone de contato"></span>
-            <br>
-
-            <strong>Folha de Serviço:</strong>
-            <span contenteditable="true" data-placeholder="Digite o nº da folha de serviço"></span>
-            <br>
-
-            <strong>Criado em:</strong>
-            <span id="criado-em" contenteditable="true"></span>
-
-        </p>
-
-    </div>
-
-
-    <div class="marca-simbolo" title="Laudo Técnico Certificado">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L4 5V11C4 16 7.5 20.2 12 21.5C16.5 20.2 20 16 20 11V5L12 2Z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
-            <path d="M8.5 12L10.8 14.3L15.5 9.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-    </div>
-
-
-</header>
-
-
-<!-- =========================================================
-     AVISO DE EDIÇÃO
-========================================================= -->
-
-<div class="aviso-edicao no-print">
-
-    ✎ Os campos com borda tracejada (ao passar o mouse fica azul, e um ✎ aparece no canto) são
-    editáveis: clique neles e digite o novo texto. Esse aviso não é impresso.
-
-</div>
-
-
-
-<!-- =========================================================
-     CONTEÚDO
-========================================================= -->
-
-<main class="conteudo">
-
-
-
-<!-- =========================================================
-     DADOS DO DEFEITO / PEÇAS
-========================================================= -->
-
-<section class="secao">
-
-
-    <div class="info-grid">
-
-
-        <div class="info-campo">
-            <label>Código do Defeito</label>
-            <div class="valor" contenteditable="true" data-placeholder="Digite o código do defeito"></div>
-        </div>
-
-
-        <div class="info-campo">
-            <label>Nº da Peça Causadora (REMOVIDA)</label>
-            <div class="valor" contenteditable="true" data-placeholder="Digite o nº da peça"></div>
-        </div>
-
-
-        <div class="info-campo">
-            <label>Nº da Peça Nova (INSTALADA)</label>
-            <div class="valor" contenteditable="true" data-placeholder="Digite o nº da peça"></div>
-        </div>
-
-
-        <div class="info-campo">
-            <label>Nº de Série/Fabricação (REMOVIDA)</label>
-            <div class="valor" contenteditable="true" data-placeholder="Digite o nº de série"></div>
-        </div>
-
-
-        <div class="info-campo">
-            <label>Nº de Série/Fabricação (INSTALADA)</label>
-            <div class="valor" contenteditable="true" data-placeholder="Digite o nº de série"></div>
-        </div>
-
-
-    </div>
-
-
-</section>
-
-
-
-<!-- =========================================================
-     RECLAMAÇÃO
-========================================================= -->
-
-<section class="secao">
-
-    <div class="titulo-secao">
-        <div class="titulo-icone">1</div>
-        <h3>Reclamação do problema</h3>
-        <div class="linha"></div>
-    </div>
-
-    <div
-        class="bloco-texto"
-        contenteditable="true"
-        data-placeholder="Descreva a reclamação relatada..."
-    ></div>
-
-</section>
-
-
-
-<!-- =========================================================
-     CAUSA
-========================================================= -->
-
-<section class="secao">
-
-    <div class="titulo-secao">
-        <div class="titulo-icone">2</div>
-        <h3>Causa do problema</h3>
-        <div class="linha"></div>
-    </div>
-
-    <div
-        class="bloco-texto"
-        contenteditable="true"
-        data-placeholder="Descreva a causa identificada..."
-    ></div>
-
-</section>
-
-
-
-<!-- =========================================================
-     CORREÇÃO
-========================================================= -->
-
-<section class="secao">
-
-    <div class="titulo-secao">
-        <div class="titulo-icone">3</div>
-        <h3>Correção do problema</h3>
-        <div class="linha"></div>
-    </div>
-
-    <div
-        class="bloco-texto"
-        contenteditable="true"
-        data-placeholder="Descreva a correção realizada..."
-    ></div>
-
-</section>
-
-
-
-<!-- =========================================================
-     PEÇAS REMOVIDAS
-========================================================= -->
-
-<section class="secao">
-
-    <div class="titulo-secao">
-        <div class="titulo-icone">✓</div>
-        <h3>Peças removidas</h3>
-        <div class="linha"></div>
-    </div>
-
-    <div class="tabela-wrap">
-
-        <table class="pecas">
-
-            <thead>
-                <tr>
-                    <th>Quantidade</th>
-                    <th>PN (Código)</th>
-                    <th>Nº de Série</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr>
-                    <td contenteditable="true" data-placeholder="0"></td>
-                    <td contenteditable="true" data-placeholder="Código da peça"></td>
-                    <td contenteditable="true" data-placeholder="Nº de série"></td>
-                </tr>
-            </tbody>
-
-        </table>
-
-    </div>
-
-</section>
-
-
-
-<!-- =========================================================
-     PEÇAS INSTALADAS
-========================================================= -->
-
-<section class="secao">
-
-    <div class="titulo-secao">
-        <div class="titulo-icone">✓</div>
-        <h3>Peças instaladas</h3>
-        <div class="linha"></div>
-    </div>
-
-    <div class="tabela-wrap">
-
-        <table class="pecas">
-
-            <thead>
-                <tr>
-                    <th>Quantidade</th>
-                    <th>PN (Código)</th>
-                    <th>Nº de Série</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr>
-                    <td contenteditable="true" data-placeholder="0"></td>
-                    <td contenteditable="true" data-placeholder="Código da peça"></td>
-                    <td contenteditable="true" data-placeholder="Nº de série"></td>
-                </tr>
-            </tbody>
-
-        </table>
-
-    </div>
-
-</section>
-
-
-
-<!-- =========================================================
-     IMAGENS
-========================================================= -->
-
-<section class="secao">
-
-    <div class="titulo-secao">
-        <div class="titulo-icone">📷</div>
-        <h3>Imagens do Laudo Técnico</h3>
-        <div class="linha"></div>
-    </div>
-
-    <div class="galeria" id="galeria">
-
-        <div class="foto-bloco">
-            <div class="foto-slot" id="foto-1">
-
-                <div class="foto-placeholder">
-                    <div class="foto-placeholder-icon">📷</div>
-                    <span>Clique abaixo para inserir uma imagem</span>
-                    <label class="foto-upload">
-                        + Inserir imagem
-                        <input type="file" accept="image/*" onchange="carregarFoto(this)">
-                    </label>
-                </div>
-
-                <img
-                    alt="Imagem do laudo"
-                    data-zoom="1"
-                    data-offx="0"
-                    data-offy="0"
-                    onpointerdown="iniciarPanFoto(event)"
-                    onpointermove="moverPanFoto(event)"
-                    onpointerup="pararPanFoto(event)"
-                    onpointerleave="pararPanFoto(event)"
-                >
-
-                <button class="foto-remover" type="button" onclick="removerFoto(this)">✕ Remover</button>
-                <span class="foto-resize-dica">arraste o canto ⇲</span>
-
-                <div class="foto-zoom-controles no-print">
-                    <button type="button" class="foto-zoom-reset" onclick="resetZoomFoto(this)" title="Restaurar">⟲</button>
-                    <button type="button" onclick="zoomFoto(this,-1)" title="Diminuir">−</button>
-                    <span class="foto-zoom-nivel">100%</span>
-                    <button type="button" onclick="zoomFoto(this,1)" title="Aumentar">+</button>
-                </div>
-
-            </div>
-            <div class="foto-legenda" contenteditable="true" data-placeholder="Adicione uma legenda para esta foto..."></div>
-            <button class="btn-excluir-campo no-print" type="button" onclick="excluirCampoFoto(this)">🗑 Excluir este campo</button>
-        </div>
-
-
-        <div class="foto-bloco">
-            <div class="foto-slot" id="foto-2">
-
-                <div class="foto-placeholder">
-                    <div class="foto-placeholder-icon">📷</div>
-                    <span>Clique abaixo para inserir uma imagem</span>
-                    <label class="foto-upload">
-                        + Inserir imagem
-                        <input type="file" accept="image/*" onchange="carregarFoto(this)">
-                    </label>
-                </div>
-
-                <img
-                    alt="Imagem do laudo"
-                    data-zoom="1"
-                    data-offx="0"
-                    data-offy="0"
-                    onpointerdown="iniciarPanFoto(event)"
-                    onpointermove="moverPanFoto(event)"
-                    onpointerup="pararPanFoto(event)"
-                    onpointerleave="pararPanFoto(event)"
-                >
-
-                <button class="foto-remover" type="button" onclick="removerFoto(this)">✕ Remover</button>
-                <span class="foto-resize-dica">arraste o canto ⇲</span>
-
-                <div class="foto-zoom-controles no-print">
-                    <button type="button" class="foto-zoom-reset" onclick="resetZoomFoto(this)" title="Restaurar">⟲</button>
-                    <button type="button" onclick="zoomFoto(this,-1)" title="Diminuir">−</button>
-                    <span class="foto-zoom-nivel">100%</span>
-                    <button type="button" onclick="zoomFoto(this,1)" title="Aumentar">+</button>
-                </div>
-
-            </div>
-            <div class="foto-legenda" contenteditable="true" data-placeholder="Adicione uma legenda para esta foto..."></div>
-            <button class="btn-excluir-campo no-print" type="button" onclick="excluirCampoFoto(this)">🗑 Excluir este campo</button>
-        </div>
-
-
-        <div class="foto-bloco">
-            <div class="foto-slot" id="foto-3">
-
-                <div class="foto-placeholder">
-                    <div class="foto-placeholder-icon">📷</div>
-                    <span>Clique abaixo para inserir uma imagem</span>
-                    <label class="foto-upload">
-                        + Inserir imagem
-                        <input type="file" accept="image/*" onchange="carregarFoto(this)">
-                    </label>
-                </div>
-
-                <img
-                    alt="Imagem do laudo"
-                    data-zoom="1"
-                    data-offx="0"
-                    data-offy="0"
-                    onpointerdown="iniciarPanFoto(event)"
-                    onpointermove="moverPanFoto(event)"
-                    onpointerup="pararPanFoto(event)"
-                    onpointerleave="pararPanFoto(event)"
-                >
-
-                <button class="foto-remover" type="button" onclick="removerFoto(this)">✕ Remover</button>
-                <span class="foto-resize-dica">arraste o canto ⇲</span>
-
-                <div class="foto-zoom-controles no-print">
-                    <button type="button" class="foto-zoom-reset" onclick="resetZoomFoto(this)" title="Restaurar">⟲</button>
-                    <button type="button" onclick="zoomFoto(this,-1)" title="Diminuir">−</button>
-                    <span class="foto-zoom-nivel">100%</span>
-                    <button type="button" onclick="zoomFoto(this,1)" title="Aumentar">+</button>
-                </div>
-
-            </div>
-            <div class="foto-legenda" contenteditable="true" data-placeholder="Adicione uma legenda para esta foto..."></div>
-            <button class="btn-excluir-campo no-print" type="button" onclick="excluirCampoFoto(this)">🗑 Excluir este campo</button>
-        </div>
-
-
-    </div>
-
-
-    <button class="btn-add-foto no-print" type="button" onclick="adicionarSlotFoto()">
-        + Adicionar outro espaço de foto
-    </button>
-
-
-</section>
-
-
-
-<!-- =========================================================
-     ASSINATURAS
-========================================================= -->
-
-<section class="secao">
-
-    <div class="titulo-secao">
-        <div class="titulo-icone">✍</div>
-        <h3>Assinaturas</h3>
-        <div class="linha"></div>
-    </div>
-
-    <div class="assinaturas-grid">
-
-        <div class="assinatura-bloco" id="bloco-tecnico">
-            <button class="btn-assinar no-print" type="button" onclick="abrirModalAssinatura('tecnico')">
-                🖊 Assinar como Técnico
-            </button>
-        </div>
-
-        <div class="assinatura-bloco" id="bloco-gestor">
-            <button class="btn-assinar no-print" type="button" onclick="abrirModalAssinatura('gestor')">
-                🖊 Assinar como Gestor/Proprietário
-            </button>
-        </div>
-
-    </div>
-
-</section>
-
-
-</main>
-
-
-</div>
-
-
-
-<!-- =========================================================
-     BOTÃO DE IMPRESSÃO
-========================================================= -->
-
-<div class="acoes no-print">
-
-    <button class="btn-imprimir" type="button" onclick="imprimirLaudo()">
-        🖨 Imprimir / Salvar em PDF
-    </button>
-
-    <div class="acoes-dica">
-        Se o botão não abrir a caixa de impressão, use Ctrl+P (Windows) ou Cmd+P (Mac).
-        Dentro da pré-visualização deste arquivo em algumas ferramentas de chat a impressão pode
-        ficar bloqueada — para garantir o funcionamento, abra o arquivo .html diretamente no navegador.
-    </div>
-
-</div>
-
-
-</div>
-<!-- fim de #conteudo-laudo -->
-
-
-<!-- =========================================================
-     MODAL DE ASSINATURA
-========================================================= -->
-
-<div class="modal-overlay no-print" id="modal-assinatura">
-
-    <div class="modal-box">
-
-        <button class="modal-fechar" type="button" onclick="fecharModal()">✕</button>
-
-        <!-- ETAPA 1: DADOS -->
-        <div class="modal-step" id="modal-step-dados">
-
-            <h3 id="modal-titulo">Assinatura</h3>
-            <p class="modal-dica">Preencha os dados de quem vai assinar</p>
-
-            <label for="input-nome">Nome completo</label>
-            <input type="text" id="input-nome" placeholder="Digite o nome completo">
-
-            <label for="input-cpf">CPF</label>
-            <input type="text" id="input-cpf" placeholder="000.000.000-00" maxlength="14" oninput="mascararCpf(this)">
-
-            <label for="input-funcao">Função</label>
-            <input type="text" id="input-funcao" placeholder="Ex: Técnico responsável">
-
-            <div class="modal-erro" id="modal-erro-dados">Preencha nome, CPF e função para continuar.</div>
-
-            <button class="btn-avancar" type="button" onclick="avancarParaAssinatura()">Avançar →</button>
-
-        </div>
-
-        <!-- ETAPA 2: ASSINATURA DIGITAL -->
-        <div class="modal-step" id="modal-step-assinatura" style="display:none">
-
-            <h3>Assine no campo abaixo</h3>
-            <p class="modal-dica">Use o dedo (tablet/celular) ou o mouse para assinar</p>
-
-            <canvas id="canvas-assinatura"></canvas>
-
-            <div class="modal-acoes-assinatura">
-                <button class="btn-limpar" type="button" onclick="limparAssinatura()">Limpar</button>
-                <button class="btn-confirmar" type="button" onclick="confirmarAssinatura()">Confirmar assinatura</button>
-            </div>
-
-            <div class="modal-erro" id="modal-erro-assinatura">Assine no campo antes de confirmar.</div>
-
-            <span class="modal-voltar" onclick="voltarParaDados()">← Voltar e corrigir dados</span>
-
-        </div>
-
-    </div>
-
-</div>
-
+<!-- SDK do Firebase (versao "compat", funciona direto via tag de script, sem precisar de build) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.16.0/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.16.0/firebase-firestore-compat.min.js"></script>
 
 <script>
+// ---------- Camada de armazenamento (Firebase Firestore) ----------
+// Substitui a API window.storage (exclusiva dos Artifacts do Claude.ai) por uma
+// versão equivalente que salva no Cloud Firestore, para que TODAS as pessoas que
+// abrirem este painel (em qualquer computador/dispositivo) leiam e gravem os
+// mesmos dados, em tempo real.
+(function(){
+  if(typeof firebase === 'undefined'){
+    console.error('SDK do Firebase não carregou. Verifique sua conexão com a internet ou se o domínio cdnjs.cloudflare.com está bloqueado.');
+    window.storage = {
+      async get(){ return null; },
+      async set(){ alert('Não foi possível conectar ao banco de dados (SDK do Firebase não carregou). Verifique sua conexão e recarregue a página.'); return null; },
+      async delete(){ return null; },
+      async list(){ return null; }
+    };
+    return;
+  }
+  const firebaseConfig = {
+    apiKey: "AIzaSyBWTR2Cm4JX7LJNnrIkQBxQlSSb2qZSvos",
+    authDomain: "qualidadenors-eed75.firebaseapp.com",
+    projectId: "qualidadenors-eed75",
+    storageBucket: "qualidadenors-eed75.firebasestorage.app",
+    messagingSenderId: "903332464109",
+    appId: "1:903332464109:web:a9f89db2090bddcf9013e4"
+  };
 
-let contadorFoto = 3;
-let assinaturaTipoAtual = null;
-const dadosAssinatura = { tecnico: null, gestor: null };
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore(app);
+  const COLLECTION = 'nors_storage';
 
+  // Firestore não permite "/" no ID do documento; trocamos por um separador seguro.
+  function docId(key){ return String(key).replace(/\//g, '__slash__'); }
 
-/* =========================================================
-   TELA INICIAL → INICIAR LAUDO
-========================================================= */
-
-function iniciarLaudo() {
-
-    document.getElementById('tela-inicial').style.display = 'none';
-    document.getElementById('conteudo-laudo').style.display = 'block';
-
-    window.scrollTo(0, 0);
-
-}
-
-
-/* =========================================================
-   NÚMERO DO LAUDO AUTOMÁTICO
-   Gera um número novo sempre que o arquivo é aberto, a menos
-   que a URL traga ?laudo=NUMERO (ex: laudo.html?laudo=5678)
-========================================================= */
-
-(function inicializarLaudo() {
-
-    const CHAVE_CONTADOR = 'laudo_tecnico_contador';
-
-    const params = new URLSearchParams(window.location.search);
-    const numeroDaUrl = params.get('laudo') || params.get('numero');
-    const numeroEl = document.getElementById('numero-laudo');
-
-    if (numeroDaUrl) {
-
-        numeroEl.textContent = '#' + numeroDaUrl.replace(/^#/, '');
-
-    } else {
-
-        let proximoNumero = 1;
-
-        try {
-            const salvo = window.localStorage.getItem(CHAVE_CONTADOR);
-            proximoNumero = salvo ? (parseInt(salvo, 10) + 1) : 1;
-            window.localStorage.setItem(CHAVE_CONTADOR, String(proximoNumero));
-        } catch (erro) {
-            // localStorage indisponível (ex: navegação privada) — usa 1 como padrão
-            proximoNumero = 1;
+  window.storage = {
+    async get(key){
+      try{
+        const snap = await db.collection(COLLECTION).doc(docId(key)).get();
+        if(!snap.exists) return null;
+        const data = snap.data();
+        return { key, value: data.value, shared: true };
+      }catch(e){
+        console.error('storage.get falhou', e);
+        return null;
+      }
+    },
+    async set(key, value){
+      try{
+        await db.collection(COLLECTION).doc(docId(key)).set({
+          value: value,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return { key, value, shared: true };
+      }catch(e){
+        console.error('storage.set falhou', e);
+        return null;
+      }
+    },
+    async delete(key){
+      try{
+        await db.collection(COLLECTION).doc(docId(key)).delete();
+        return { key, deleted: true, shared: true };
+      }catch(e){
+        console.error('storage.delete falhou', e);
+        return null;
+      }
+    },
+    async list(prefix){
+      try{
+        let query = db.collection(COLLECTION);
+        if(prefix){
+          query = query
+            .orderBy(firebase.firestore.FieldPath.documentId())
+            .startAt(docId(prefix))
+            .endAt(docId(prefix) + '\uf8ff');
         }
-
-        numeroEl.textContent = '#' + proximoNumero;
-
+        const snap = await query.get();
+        const keys = snap.docs.map(d => d.id.replace(/__slash__/g, '/'));
+        return { keys, prefix, shared: true };
+      }catch(e){
+        console.error('storage.list falhou', e);
+        return null;
+      }
     }
-
-    document.getElementById('criado-em').textContent = formatarDataHora(new Date());
-
+  };
 })();
 
-function formatarDataHora(data) {
-    const pad = (n) => String(n).padStart(2, '0');
-    return pad(data.getDate()) + '/' + pad(data.getMonth() + 1) + '/' + data.getFullYear() +
-        ' ' + pad(data.getHours()) + ':' + pad(data.getMinutes()) + ':' + pad(data.getSeconds());
-}
+(function(){
+  const MONTH_NAMES = ['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
+  const MONTH_SHORT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const QUARTERS = [
+    {label:'T1 · Jan–Mar', months:[0,1,2]},
+    {label:'T2 · Abr–Jun', months:[3,4,5]},
+    {label:'T3 · Jul–Set', months:[6,7,8]},
+    {label:'T4 · Out–Dez', months:[9,10,11]},
+  ];
+  const GROUPS = {
+    seguranca:{label:'Segurança', color:'#c23b3b'},
+    agendamentos:{label:'Agendamentos & Passagens', color:'#e8590c'},
+    portaporta:{label:'Porta a Porta', color:'#1f7a6c'},
+    kaizen:{label:'Kaizen', color:'#4a5a72'},
+  };
+  const METRICS = [
+    {id:'acid_afast', label:'Qtde acidentes com afastamento', group:'seguranca', fech:'sum'},
+    {id:'acid_sem', label:'Qtde acidentes sem afastamento', group:'seguranca', fech:'sum'},
+    {id:'dias_afast', label:'Dias de afastamento (em caso de acidente)', group:'seguranca', fech:'sum'},
+    {id:'obj_agend', label:'Objetivo de agendados (PIT STOP + OF)', group:'agendamentos', fech:'sum'},
+    {id:'qtd_agend', label:'Qtde de agendados (PIT STOP + OF)', group:'agendamentos', fech:'sum'},
+    {id:'agend_comp', label:'Qtde agendados comparecidos (PIT STOP+OFICINA)', group:'agendamentos', fech:'sum'},
+    {id:'passagens', label:'Qtde passagens (PIT STOP + OF)', group:'agendamentos', fech:'sum'},
+    {id:'pp_agend_ps', label:'Porta a Porta agendados (PIT STOP) — min', group:'portaporta', fech:'avg'},
+    {id:'pp_nagend_ps', label:'Porta a Porta não agendados (PIT STOP) — min', group:'portaporta', fech:'avg'},
+    {id:'pp_agend_of', label:'Porta a Porta agendados (OFICINA) — min', group:'portaporta', fech:'avg'},
+    {id:'pp_nagend_of', label:'Porta a Porta não agendados (OFICINA) — min', group:'portaporta', fech:'avg'},
+    {id:'kaizen_elab', label:'Quant. Kaizens elaborados', group:'kaizen', fech:'sum'},
+    {id:'kaizen_impl', label:'Quant. Kaizens implementados', group:'kaizen', fech:'sum'},
+  ];
 
+  const PORTA_META_MIN = 150; // meta Porta a Porta: abaixo disso = verde, senão = vermelho
 
-/* =========================================================
-   IMPRESSÃO
-========================================================= */
+  const BRANCHES = [
+    {id:'cuiaba', label:'Cuiabá'},
+    {id:'sinop', label:'Sinop'},
+    {id:'portovelho', label:'Porto Velho'},
+    {id:'vilhena', label:'Vilhena'},
+    {id:'rondonopolis', label:'Rondonópolis'},
+  ];
 
-function imprimirLaudo() {
+  let state = { page:'home', year:2026, branch:BRANCHES[0].id, qIdx:0, kQIdx:0, data:null, kaizenPhotos:{}, acidentes:undefined, saveTimer:null };
 
-    // tira o foco de qualquer campo editável para não imprimir bordas/caret
-    if (document.activeElement) {
-        document.activeElement.blur();
+  function blankData(year){
+    const values={}, fechMes={}, comments={}, kaizenNotes={};
+    METRICS.forEach(m=>{values[m.id]={}; fechMes[m.id]={}; comments[m.id]={};});
+    return {year, values, fechMes, comments, kaizenNotes, weekDates:{}, monthClose:{}};
+  }
+
+  function pad(n){return n<10 ? '0'+n : ''+n;}
+  // Porto Velho mantém a chave antiga (dados já existentes); demais filiais usam chave nova por filial.
+  function storageKey(year, branch){
+    return branch==='portovelho' ? 'nors-porto-velho:'+year : 'nors-'+branch+':'+year;
+  }
+  function photoKey(year, gw){return 'nors-porto-velho-kaizen-foto:'+year+':'+gw;}
+  function branchLabel(id){ const b = BRANCHES.find(x=>x.id===id); return b ? b.label : id; }
+  function pmClass(v){
+    if(v===null || v===undefined || v==='' || isNaN(v)) return '';
+    return Number(v) < PORTA_META_MIN ? 'pm-ok' : 'pm-bad';
+  }
+
+  function buildBranchSelect(){
+    const sel = document.getElementById('branchSelect');
+    if(!sel) return;
+    sel.innerHTML = BRANCHES.map(b=>`<option value="${b.id}">${b.label}</option>`).join('');
+    sel.value = state.branch;
+  }
+
+  async function loadData(year, branch){
+    setSavePill('carregando…', true);
+    let loaded = null;
+    try{
+      const res = await window.storage.get(storageKey(year, branch), false);
+      if(res && res.value) loaded = JSON.parse(res.value);
+    }catch(e){ /* not found or error -> blank */ }
+    state.data = loaded ? Object.assign(blankData(year), loaded) : blankData(year);
+    state.year = year;
+    state.branch = branch;
+    state.kaizenPhotos = {};
+    document.getElementById('yrLabel').textContent = year;
+    document.getElementById('kYrLabel').textContent = year;
+    const sel = document.getElementById('branchSelect');
+    if(sel) sel.value = branch;
+    const subtitle = document.getElementById('vpsSubtitle');
+    if(subtitle) subtitle.textContent = 'Controle operacional Pit Stop / Oficina · Filial: ' + branchLabel(branch);
+    setSavePill('salvo', false);
+    render();
+    if(state.page === 'kaizen') renderKaizenPage();
+  }
+  // Mantido por compatibilidade (recarrega ano na filial atual)
+  function loadYear(year){ return loadData(year, state.branch); }
+
+  function setSavePill(text, active){
+    const p = document.getElementById('savePill');
+    p.textContent = text;
+    p.classList.toggle('saving', !!active);
+  }
+
+  function debounceSave(){
+    setSavePill('salvando…', true);
+    clearTimeout(state.saveTimer);
+    state.saveTimer = setTimeout(async ()=>{
+      try{
+        await window.storage.set(storageKey(state.year, state.branch), JSON.stringify(state.data), false);
+        setSavePill('salvo', false);
+      }catch(e){
+        setSavePill('não salvo (offline)', true);
+      }
+    }, 500);
+  }
+
+  function weekGlobal(monthIdx, weekInMonth){ return monthIdx*4 + weekInMonth; } // 1..48
+
+  // Semana operacional: sexta-feira a quinta-feira. A W01 começa na 1ª sexta-feira
+  // do ano (em 2026, 02/01). As semanas seguem em blocos fixos de 7 dias a partir daí.
+  function firstFridayOfYear(year){
+    const jan1 = new Date(Date.UTC(year,0,1));
+    const day = jan1.getUTCDay(); // 0=Dom..6=Sáb
+    const offset = (5 - day + 7) % 7; // dias até a sexta-feira
+    jan1.setUTCDate(jan1.getUTCDate() + offset);
+    return jan1;
+  }
+  function fmtDM(d){ return pad(d.getUTCDate())+'/'+pad(d.getUTCMonth()+1); }
+  function weekRangeLabel(year, gw){
+    const start = new Date(firstFridayOfYear(year));
+    start.setUTCDate(start.getUTCDate() + (gw-1)*7);
+    const end = new Date(start);
+    end.setUTCDate(end.getUTCDate() + 6);
+    return fmtDM(start)+'–'+fmtDM(end);
+  }
+
+  function computeFech(m, mi){
+    const vals = [];
+    for(let w=1; w<=4; w++){
+      const gw = weekGlobal(mi,w);
+      const v = state.data.values[m.id][gw];
+      if(v !== undefined && v !== null && v !== '') vals.push(Number(v));
     }
-
-    setTimeout(function () {
-        window.print();
-    }, 50);
-
-}
-
-
-/* =========================================================
-   INSERIR FOTO
-========================================================= */
-
-function carregarFoto(input) {
-
-    const arquivo = input.files[0];
-
-    if (!arquivo) {
-        return;
-    }
-
-    if (!arquivo.type.startsWith("image/")) {
-        alert("Selecione uma imagem válida.");
-        input.value = "";
-        return;
-    }
-
-    const slot = input.closest(".foto-slot");
-    const imagem = slot.querySelector("img");
-
-    const leitor = new FileReader();
-
-    leitor.onload = function (evento) {
-        imagem.src = evento.target.result;
-        slot.classList.add("tem-imagem");
-        redefinirZoomImagem(imagem);
-    };
-
-    leitor.readAsDataURL(arquivo);
-
-}
-
-
-/* =========================================================
-   REMOVER FOTO
-========================================================= */
-
-function removerFoto(botao) {
-
-    const slot = botao.closest(".foto-slot");
-    const imagem = slot.querySelector("img");
-
-    imagem.src = "";
-    slot.classList.remove("tem-imagem");
-    redefinirZoomImagem(imagem);
-
-    const input = slot.querySelector('input[type="file"]');
-
-    if (input) {
-        input.value = "";
-    }
-
-}
-
-
-/* =========================================================
-   ZOOM DA FOTO (aumentar / diminuir / arrastar)
-========================================================= */
-
-function zoomFoto(botao, direcao) {
-
-    const slot = botao.closest(".foto-slot");
-    const imagem = slot.querySelector("img");
-
-    let zoom = parseFloat(imagem.dataset.zoom || "1");
-    zoom = Math.round((zoom + direcao * 0.15) * 100) / 100;
-    zoom = Math.min(3, Math.max(1, zoom));
-
-    imagem.dataset.zoom = zoom;
-
-    // ao voltar para 100%, remove qualquer deslocamento de arraste
-    if (zoom === 1) {
-        imagem.dataset.offx = 0;
-        imagem.dataset.offy = 0;
-    }
-
-    aplicarTransformFoto(imagem);
-    atualizarRotuloZoom(slot, zoom);
-
-}
-
-function resetZoomFoto(botao) {
-
-    const slot = botao.closest(".foto-slot");
-    const imagem = slot.querySelector("img");
-
-    redefinirZoomImagem(imagem);
-
-}
-
-function redefinirZoomImagem(imagem) {
-
-    imagem.dataset.zoom = "1";
-    imagem.dataset.offx = "0";
-    imagem.dataset.offy = "0";
-
-    aplicarTransformFoto(imagem);
-
-    const slot = imagem.closest(".foto-slot");
-    atualizarRotuloZoom(slot, 1);
-
-}
-
-function atualizarRotuloZoom(slot, zoom) {
-
-    const rotulo = slot.querySelector(".foto-zoom-nivel");
-
-    if (rotulo) {
-        rotulo.textContent = Math.round(zoom * 100) + "%";
-    }
-
-}
-
-function aplicarTransformFoto(imagem) {
-
-    const zoom = parseFloat(imagem.dataset.zoom || "1");
-    const offx = parseFloat(imagem.dataset.offx || "0");
-    const offy = parseFloat(imagem.dataset.offy || "0");
-
-    imagem.style.transform = "translate(" + offx + "px," + offy + "px) scale(" + zoom + ")";
-    imagem.classList.toggle("pode-arrastar", zoom > 1);
-
-}
-
-function iniciarPanFoto(evento) {
-
-    const imagem = evento.currentTarget;
-    const zoom = parseFloat(imagem.dataset.zoom || "1");
-
-    if (zoom <= 1) {
-        return;
-    }
-
-    evento.preventDefault();
-
-    imagem.dataset.arrastando = "1";
-    imagem.dataset.iniciox = evento.clientX;
-    imagem.dataset.inicioy = evento.clientY;
-    imagem.dataset.offxInicio = imagem.dataset.offx || "0";
-    imagem.dataset.offyInicio = imagem.dataset.offy || "0";
-
-    imagem.classList.add("arrastando");
-
-    if (imagem.setPointerCapture) {
-        imagem.setPointerCapture(evento.pointerId);
-    }
-
-}
-
-function moverPanFoto(evento) {
-
-    const imagem = evento.currentTarget;
-
-    if (imagem.dataset.arrastando !== "1") {
-        return;
-    }
-
-    evento.preventDefault();
-
-    const dx = evento.clientX - parseFloat(imagem.dataset.iniciox);
-    const dy = evento.clientY - parseFloat(imagem.dataset.inicioy);
-
-    imagem.dataset.offx = parseFloat(imagem.dataset.offxInicio) + dx;
-    imagem.dataset.offy = parseFloat(imagem.dataset.offyInicio) + dy;
-
-    aplicarTransformFoto(imagem);
-
-}
-
-function pararPanFoto(evento) {
-
-    const imagem = evento.currentTarget;
-
-    imagem.dataset.arrastando = "0";
-    imagem.classList.remove("arrastando");
-
-}
-
-
-/* =========================================================
-   EXCLUIR CAMPO DE FOTO (o quadro inteiro, incluindo legenda)
-========================================================= */
-
-function excluirCampoFoto(botao) {
-
-    const bloco = botao.closest(".foto-bloco");
-    const temImagem = bloco.querySelector(".foto-slot").classList.contains("tem-imagem");
-    const legenda = bloco.querySelector(".foto-legenda").textContent.trim();
-
-    if (temImagem || legenda) {
-        const confirmar = confirm("Este campo tem foto e/ou legenda preenchida. Deseja realmente excluir?");
-        if (!confirmar) {
-            return;
+    if(vals.length === 0) return null;
+    const sum = vals.reduce((a,b)=>a+b, 0);
+    if(m.fech === 'avg') return sum / vals.length;
+    return sum;
+  }
+  function fmtFech(v){
+    if(v === null || v === undefined) return '';
+    return Number.isInteger(v) ? String(v) : v.toFixed(2);
+  }
+
+  function buildTabs(){
+    const wrap = document.getElementById('tabs');
+    wrap.innerHTML = '';
+    QUARTERS.forEach((q,i)=>{
+      const b = document.createElement('button');
+      b.className = 'nors-tab' + (i===state.qIdx ? ' active' : '');
+      b.textContent = q.label;
+      b.addEventListener('click', ()=>{ state.qIdx = i; render(); });
+      wrap.appendChild(b);
+    });
+  }
+
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+  function buildTable(){
+    const q = QUARTERS[state.qIdx];
+    let html = '<table class="nors-table"><thead>';
+    // month name row
+    html += '<tr><th class="th-label"></th>';
+    q.months.forEach(mi=>{
+      const bg = mi%2===0 ? 'var(--slate)' : 'var(--ink)';
+      html += `<th class="month-head" colspan="5" style="background:${bg}">${MONTH_NAMES[mi]}</th>`;
+    });
+    html += '</tr>';
+    // week / fech mes header row
+    html += '<tr><th class="th-label">Semana <span style="color:var(--muted);font-weight:400">(sex–qui, calculado)</span></th>';
+    q.months.forEach(mi=>{
+      for(let w=1; w<=4; w++){
+        const gw = weekGlobal(mi,w);
+        const dateLabel = esc(weekRangeLabel(state.year, gw));
+        const sep = w===1 ? ' month-sep' : '';
+        html += `<th class="week-head${sep}"><span class="wlabel">W${pad(gw)}</span><span class="wdate">${dateLabel}</span></th>`;
+      }
+      const closeVal = esc(state.data.monthClose[mi] || '');
+      html += `<th class="week-head fech-head"><span class="wlabel">FECH MÊS</span><input data-type="monthclose" data-mi="${mi}" placeholder="dd/mmm" value="${closeVal}"></th>`;
+    });
+    html += '</tr></thead><tbody>';
+
+    let lastGroup = null;
+    METRICS.forEach((m, idx)=>{
+      if(m.group !== lastGroup){
+        const g = GROUPS[m.group];
+        const span = q.months.length*5 + 1;
+        const note = m.group==='portaporta' ? `<span class="group-note">· meta: abaixo de ${PORTA_META_MIN} min</span>` : '';
+        html += `<tr class="group-row" style="background:${g.color}"><td colspan="${span}" style="background:${g.color}">${g.label}${note}</td></tr>`;
+        lastGroup = m.group;
+      }
+      const g = GROUPS[m.group];
+      const isPorta = m.group === 'portaporta';
+      html += `<tr class="metric-row" style="--grp-color:${g.color}"><td class="td-label">${esc(m.label)}</td>`;
+      q.months.forEach(mi=>{
+        for(let w=1; w<=4; w++){
+          const gw = weekGlobal(mi,w);
+          const v = state.data.values[m.id][gw];
+          const sep = w===1 ? ' month-sep' : '';
+          const pmCls = isPorta ? pmClass(v) : '';
+          const cls = [sep.trim(), pmCls].filter(Boolean).join(' ');
+          html += `<td class="${cls}"><input class="cell-num" type="number" inputmode="numeric" data-type="value" data-metric="${m.id}" data-gw="${gw}" value="${v!==undefined && v!==null ? v : ''}"></td>`;
         }
+        const fv = computeFech(m, mi);
+        const tag = m.fech === 'avg' ? 'méd' : 'soma';
+        const fechPmCls = isPorta ? ' ' + pmClass(fv) : '';
+        html += `<td class="fech-cell${fechPmCls}" data-fech-metric="${m.id}" data-fech-mi="${mi}" title="${tag} das W${pad(weekGlobal(mi,1))}–W${pad(weekGlobal(mi,4))}"><span class="fech-readonly">${fmtFech(fv)}</span></td>`;
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    document.getElementById('tableWrap').innerHTML = html;
+  }
+
+  function buildComments(){
+    const q = QUARTERS[state.qIdx];
+    let html = '';
+    METRICS.forEach(m=>{
+      html += `<details class="comment-card"><summary>${esc(m.label)}</summary><div class="comment-grid">`;
+      q.months.forEach(mi=>{
+        const val = esc(state.data.comments[m.id][mi] || '');
+        html += `<div><label>${MONTH_SHORT[mi]}</label><textarea data-type="comment" data-metric="${m.id}" data-mi="${mi}" placeholder="Observação de ${MONTH_SHORT[mi]}...">${val}</textarea></div>`;
+      });
+      html += '</div></details>';
+    });
+    document.getElementById('commentsWrap').innerHTML = html;
+  }
+
+  function render(){
+    buildTabs();
+    buildTable();
+    buildComments();
+  }
+
+  document.addEventListener('input', function(e){
+    const t = e.target;
+    const type = t.dataset.type;
+    if(!type) return;
+    if(type==='value'){
+      const val = t.value === '' ? null : Number(t.value);
+      const metricId = t.dataset.metric;
+      const gw = Number(t.dataset.gw);
+      state.data.values[metricId][gw] = val;
+      // Atualiza só a célula FECH MÊS do mês afetado (soma ou média), sem redesenhar a tabela
+      const mi = Math.floor((gw-1)/4);
+      const m = METRICS.find(x=>x.id===metricId);
+      const newFech = computeFech(m, mi);
+      const fechTd = document.querySelector(`[data-fech-metric="${metricId}"][data-fech-mi="${mi}"]`);
+      const cell = fechTd ? fechTd.querySelector('.fech-readonly') : null;
+      if(cell) cell.textContent = fmtFech(newFech);
+      if(m.group === 'portaporta'){
+        const td = t.closest('td');
+        if(td){
+          td.classList.remove('pm-ok','pm-bad');
+          const cls = pmClass(val);
+          if(cls) td.classList.add(cls);
+        }
+        if(fechTd){
+          fechTd.classList.remove('pm-ok','pm-bad');
+          const fcls = pmClass(newFech);
+          if(fcls) fechTd.classList.add(fcls);
+        }
+      }
+      debounceSave();
+      return;
+    }else if(type==='monthclose'){
+      state.data.monthClose[t.dataset.mi] = t.value;
+    }else if(type==='comment'){
+      state.data.comments[t.dataset.metric][t.dataset.mi] = t.value;
+    }else if(type==='kaizen-note'){
+      state.data.kaizenNotes[t.dataset.gw] = t.value;
     }
+    debounceSave();
+  });
 
-    bloco.remove();
+  buildBranchSelect();
+  document.getElementById('branchSelect').addEventListener('change', function(e){
+    loadData(state.year, e.target.value);
+  });
 
-}
+  document.getElementById('yrUp').addEventListener('click', ()=> loadData(state.year+1, state.branch));
+  document.getElementById('yrDown').addEventListener('click', ()=> loadData(state.year-1, state.branch));
 
+  document.getElementById('btnExport').addEventListener('click', ()=>{
+    const blob = new Blob([JSON.stringify(state.data, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'nors-' + state.branch + '-' + state.year + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
 
-/* =========================================================
-   ADICIONAR NOVO ESPAÇO DE FOTO
-========================================================= */
-
-function adicionarSlotFoto() {
-
-    contadorFoto += 1;
-
-    const novoId = "foto-" + contadorFoto;
-
-    const novoBloco = document.createElement("div");
-    novoBloco.className = "foto-bloco";
-
-    novoBloco.innerHTML =
-        '<div class="foto-slot" id="' + novoId + '">' +
-            '<div class="foto-placeholder">' +
-                '<div class="foto-placeholder-icon">📷</div>' +
-                '<span>Clique abaixo para inserir uma imagem</span>' +
-                '<label class="foto-upload">' +
-                    '+ Inserir imagem' +
-                    '<input type="file" accept="image/*" onchange="carregarFoto(this)">' +
-                '</label>' +
-            '</div>' +
-            '<img alt="Imagem do laudo" data-zoom="1" data-offx="0" data-offy="0" ' +
-                'onpointerdown="iniciarPanFoto(event)" onpointermove="moverPanFoto(event)" ' +
-                'onpointerup="pararPanFoto(event)" onpointerleave="pararPanFoto(event)">' +
-            '<button class="foto-remover" type="button" onclick="removerFoto(this)">✕ Remover</button>' +
-            '<span class="foto-resize-dica">arraste o canto ⇲</span>' +
-            '<div class="foto-zoom-controles no-print">' +
-                '<button type="button" class="foto-zoom-reset" onclick="resetZoomFoto(this)" title="Restaurar">⟲</button>' +
-                '<button type="button" onclick="zoomFoto(this,-1)" title="Diminuir">−</button>' +
-                '<span class="foto-zoom-nivel">100%</span>' +
-                '<button type="button" onclick="zoomFoto(this,1)" title="Aumentar">+</button>' +
-            '</div>' +
-        '</div>' +
-        '<div class="foto-legenda" contenteditable="true" data-placeholder="Adicione uma legenda para esta foto..."></div>' +
-        '<button class="btn-excluir-campo no-print" type="button" onclick="excluirCampoFoto(this)">🗑 Excluir este campo</button>';
-
-    document.getElementById("galeria").appendChild(novoBloco);
-
-}
-
-
-/* =========================================================
-   ASSINATURA — MÁSCARA DE CPF
-========================================================= */
-
-function mascararCpf(input) {
-
-    let v = input.value.replace(/\D/g, '').slice(0, 11);
-
-    if (v.length > 9) {
-        v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
-    } else if (v.length > 6) {
-        v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
-    } else if (v.length > 3) {
-        v = v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
-    }
-
-    input.value = v;
-
-}
-
-
-/* =========================================================
-   ASSINATURA — ABRIR/FECHAR MODAL
-========================================================= */
-
-function abrirModalAssinatura(tipo) {
-
-    assinaturaTipoAtual = tipo;
-
-    const titulo = tipo === 'tecnico'
-        ? 'Assinatura do Técnico'
-        : 'Assinatura do Gestor/Proprietário';
-
-    document.getElementById('modal-titulo').textContent = titulo;
-    document.getElementById('input-nome').value = '';
-    document.getElementById('input-cpf').value = '';
-    document.getElementById('input-funcao').value = '';
-    document.getElementById('modal-erro-dados').classList.remove('mostrar');
-
-    document.getElementById('modal-step-dados').style.display = 'block';
-    document.getElementById('modal-step-assinatura').style.display = 'none';
-
-    document.getElementById('modal-assinatura').classList.add('aberto');
-
-}
-
-function fecharModal() {
-
-    document.getElementById('modal-assinatura').classList.remove('aberto');
-    assinaturaTipoAtual = null;
-
-}
-
-
-/* =========================================================
-   ASSINATURA — ETAPA 1 → 2
-========================================================= */
-
-function avancarParaAssinatura() {
-
-    const nome = document.getElementById('input-nome').value.trim();
-    const cpf = document.getElementById('input-cpf').value.trim();
-    const funcao = document.getElementById('input-funcao').value.trim();
-
-    if (!nome || !cpf || !funcao) {
-        document.getElementById('modal-erro-dados').classList.add('mostrar');
-        return;
-    }
-
-    document.getElementById('modal-erro-dados').classList.remove('mostrar');
-
-    document.getElementById('modal-step-dados').style.display = 'none';
-    document.getElementById('modal-step-assinatura').style.display = 'block';
-
-    // o canvas só pode ser preparado depois de ficar visível (precisa de largura real)
-    requestAnimationFrame(prepararCanvasAssinatura);
-
-}
-
-function voltarParaDados() {
-
-    document.getElementById('modal-step-assinatura').style.display = 'none';
-    document.getElementById('modal-step-dados').style.display = 'block';
-
-}
-
-
-/* =========================================================
-   ASSINATURA — CANVAS (MOUSE E TOUCH)
-========================================================= */
-
-let ctxAssinatura = null;
-let desenhando = false;
-let assinaturaTemTraco = false;
-
-function prepararCanvasAssinatura() {
-
-    const canvas = document.getElementById('canvas-assinatura');
-    const rect = canvas.getBoundingClientRect();
-
-    // ajusta a resolução real do canvas ao tamanho exibido, para o traço não ficar borrado
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-
-    ctxAssinatura = canvas.getContext('2d');
-    ctxAssinatura.lineWidth = 2.4;
-    ctxAssinatura.lineCap = 'round';
-    ctxAssinatura.lineJoin = 'round';
-    ctxAssinatura.strokeStyle = '#10212d';
-
-    assinaturaTemTraco = false;
-    document.getElementById('modal-erro-assinatura').classList.remove('mostrar');
-
-    canvas.onpointerdown = iniciarTraco;
-    canvas.onpointermove = continuarTraco;
-    canvas.onpointerup = pararTraco;
-    canvas.onpointerleave = pararTraco;
-
-}
-
-function posicaoNoCanvas(evento, canvas) {
-
-    const rect = canvas.getBoundingClientRect();
-
-    return {
-        x: evento.clientX - rect.left,
-        y: evento.clientY - rect.top
+  document.getElementById('btnImport').addEventListener('click', ()=>{
+    document.getElementById('fileImport').click();
+  });
+  document.getElementById('fileImport').addEventListener('change', function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev){
+      try{
+        const parsed = JSON.parse(ev.target.result);
+        state.data = Object.assign(blankData(state.year), parsed);
+        render();
+        debounceSave();
+      }catch(err){
+        alert('Arquivo inválido. Selecione um backup .json exportado por este painel.');
+      }
     };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
 
-}
+  // ---------- Navegação entre páginas ----------
+  function goToPage(p){
+    state.page = p;
+    document.getElementById('page-home').style.display = p==='home' ? '' : 'none';
+    document.getElementById('page-vps').style.display = p==='vps' ? '' : 'none';
+    document.getElementById('page-kaizen').style.display = p==='kaizen' ? '' : 'none';
+    document.getElementById('page-acidentes').style.display = p==='acidentes' ? '' : 'none';
+    document.getElementById('pageNav').style.display = p==='home' ? 'none' : 'flex';
+    document.querySelectorAll('.page-nav-btn').forEach(b=> b.classList.toggle('active', b.dataset.page===p));
+    if(p==='kaizen') renderKaizenPage();
+    if(p==='acidentes') renderAcidentesPage();
+  }
+  document.querySelectorAll('.page-nav-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> goToPage(btn.dataset.page));
+  });
+  document.getElementById('btnStartVps').addEventListener('click', ()=> goToPage('vps'));
 
-function iniciarTraco(evento) {
+  // ---------- Kaizens Destaque ----------
+  function buildKaizenTabs(){
+    const wrap = document.getElementById('kaizenTabs');
+    wrap.innerHTML = '';
+    QUARTERS.forEach((q,i)=>{
+      const b = document.createElement('button');
+      b.className = 'nors-tab' + (i===state.kQIdx ? ' active' : '');
+      b.textContent = q.label;
+      b.addEventListener('click', ()=>{ state.kQIdx = i; renderKaizenPage(); });
+      wrap.appendChild(b);
+    });
+  }
 
-    evento.preventDefault();
+  function kaizenWeeksOfQuarter(qIdx){
+    const weeks = [];
+    QUARTERS[qIdx].months.forEach(mi=>{ for(let w=1; w<=4; w++) weeks.push(weekGlobal(mi,w)); });
+    return weeks;
+  }
 
-    desenhando = true;
-    assinaturaTemTraco = true;
+  function buildKaizenWeeks(){
+    const weeks = kaizenWeeksOfQuarter(state.kQIdx);
+    let html = '<div class="kaizen-grid">';
+    weeks.forEach(gw=>{
+      const dateLabel = esc(weekRangeLabel(state.year, gw));
+      const photos = state.kaizenPhotos[gw];
+      const note = esc(state.data.kaizenNotes[gw] || '');
+      let photoInner;
+      if(photos === undefined){
+        photoInner = `<span class="kaizen-photo-label label-empty">Carregando…</span>`;
+      }else if(photos.length === 0){
+        photoInner = `<label class="kaizen-photo-label label-empty"><span>+</span>Adicionar foto
+          <input class="kaizen-photo-input" type="file" accept="image/*" data-type="kaizen-photo" data-gw="${gw}">
+        </label>`;
+      }else{
+        photoInner = photos.map((p, idx)=>`
+          <div class="kaizen-photo-thumb" data-type="kaizen-photo-open" data-gw="${gw}" data-idx="${idx}" title="Clique para ampliar">
+            <img src="${p}" alt="Foto ${idx+1} do kaizen W${pad(gw)}">
+            <button type="button" class="kaizen-photo-remove" data-type="kaizen-photo-remove" data-gw="${gw}" data-idx="${idx}" title="Remover foto">✕</button>
+          </div>`).join('') +
+          `<label class="kaizen-photo-label" title="Adicionar mais uma foto"><span>+</span>Adicionar
+            <input class="kaizen-photo-input" type="file" accept="image/*" data-type="kaizen-photo" data-gw="${gw}">
+          </label>`;
+      }
+      html += `<div class="kaizen-card">
+        <div class="kaizen-card-head"><span>W${pad(gw)}</span><span class="wdate">${dateLabel}</span></div>
+        <div class="kaizen-photo-zone">${photoInner}</div>
+        <textarea class="kaizen-text" data-type="kaizen-note" data-gw="${gw}" placeholder="Descreva o kaizen destaque da semana...">${note}</textarea>
+      </div>`;
+    });
+    html += '</div>';
+    document.getElementById('kaizenWrap').innerHTML = html;
+  }
 
-    const canvas = evento.target;
-    const pos = posicaoNoCanvas(evento, canvas);
-
-    ctxAssinatura.beginPath();
-    ctxAssinatura.moveTo(pos.x, pos.y);
-
-}
-
-function continuarTraco(evento) {
-
-    if (!desenhando) {
-        return;
+  // Converte o valor salvo (pode ser uma lista JSON de fotos, ou uma foto única no formato antigo) em array
+  function parsePhotosValue(raw){
+    if(!raw) return [];
+    try{
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [raw];
+    }catch(e){
+      return [raw]; // formato antigo: uma única data URL
     }
+  }
 
-    evento.preventDefault();
+  async function loadKaizenQuarterPhotos(qIdx){
+    const weeks = kaizenWeeksOfQuarter(qIdx);
+    await Promise.all(weeks.map(async gw=>{
+      if(state.kaizenPhotos[gw] !== undefined) return;
+      try{
+        const res = await window.storage.get(photoKey(state.year, gw), false);
+        state.kaizenPhotos[gw] = (res && res.value) ? parsePhotosValue(res.value) : [];
+      }catch(e){
+        state.kaizenPhotos[gw] = [];
+      }
+    }));
+  }
 
-    const canvas = evento.target;
-    const pos = posicaoNoCanvas(evento, canvas);
-
-    ctxAssinatura.lineTo(pos.x, pos.y);
-    ctxAssinatura.stroke();
-
-}
-
-function pararTraco(evento) {
-
-    desenhando = false;
-
-}
-
-function limparAssinatura() {
-
-    const canvas = document.getElementById('canvas-assinatura');
-
-    ctxAssinatura.clearRect(0, 0, canvas.width, canvas.height);
-    assinaturaTemTraco = false;
-
-}
-
-
-/* =========================================================
-   ASSINATURA — CONFIRMAR
-========================================================= */
-
-function confirmarAssinatura() {
-
-    if (!assinaturaTemTraco) {
-        document.getElementById('modal-erro-assinatura').classList.add('mostrar');
-        return;
+  async function saveKaizenPhotos(gw){
+    const photos = state.kaizenPhotos[gw] || [];
+    try{
+      if(photos.length === 0){
+        await window.storage.delete(photoKey(state.year, gw), false);
+      }else{
+        await window.storage.set(photoKey(state.year, gw), JSON.stringify(photos), false);
+      }
+    }catch(err){
+      alert('Não foi possível salvar a(s) foto(s). Tente uma imagem menor.');
     }
+  }
 
-    const canvas = document.getElementById('canvas-assinatura');
-    const imagemAssinatura = canvas.toDataURL('image/png');
+  async function renderKaizenPage(){
+    buildKaizenTabs();
+    document.getElementById('kYrLabel').textContent = state.year;
+    buildKaizenWeeks();
+    await loadKaizenQuarterPhotos(state.kQIdx);
+    buildKaizenWeeks();
+  }
 
-    const registro = {
-        nome: document.getElementById('input-nome').value.trim(),
-        cpf: document.getElementById('input-cpf').value.trim(),
-        funcao: document.getElementById('input-funcao').value.trim(),
-        assinadoEm: formatarDataHora(new Date()),
-        imagem: imagemAssinatura
+  // Reduz e comprime a imagem antes de guardar (evita estourar o limite de armazenamento)
+  function resizeImageFile(file, maxDim, quality){
+    return new Promise((resolve, reject)=>{
+      const reader = new FileReader();
+      reader.onload = function(e){
+        const img = new Image();
+        img.onload = function(){
+          let w = img.width, h = img.height;
+          if(w > h){ if(w > maxDim){ h = Math.round(h*maxDim/w); w = maxDim; } }
+          else{ if(h > maxDim){ w = Math.round(w*maxDim/h); h = maxDim; } }
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  document.addEventListener('change', function(e){
+    const t = e.target;
+    if(!t.dataset || t.dataset.type !== 'kaizen-photo') return;
+    const gw = Number(t.dataset.gw);
+    const file = t.files && t.files[0];
+    if(!file) return;
+    resizeImageFile(file, 900, 0.72).then(async dataURL=>{
+      if(!Array.isArray(state.kaizenPhotos[gw])) state.kaizenPhotos[gw] = [];
+      state.kaizenPhotos[gw].push(dataURL);
+      buildKaizenWeeks();
+      await saveKaizenPhotos(gw);
+    }).catch(()=>{
+      alert('Não foi possível processar essa imagem.');
+    });
+  });
+
+  document.addEventListener('click', function(e){
+    const removeBtn = e.target.closest('[data-type="kaizen-photo-remove"]');
+    if(removeBtn){
+      e.stopPropagation();
+      const gw = Number(removeBtn.dataset.gw);
+      const idx = Number(removeBtn.dataset.idx);
+      if(Array.isArray(state.kaizenPhotos[gw])) state.kaizenPhotos[gw].splice(idx, 1);
+      buildKaizenWeeks();
+      saveKaizenPhotos(gw);
+      return;
+    }
+    const openThumb = e.target.closest('[data-type="kaizen-photo-open"]');
+    if(openThumb){
+      const gw = Number(openThumb.dataset.gw);
+      const idx = Number(openThumb.dataset.idx);
+      const photos = state.kaizenPhotos[gw];
+      if(photos && photos[idx]) openLightbox(photos[idx]);
+    }
+  });
+
+  // ---------- Lightbox (ampliar foto) ----------
+  function openLightbox(src){
+    const overlay = document.createElement('div');
+    overlay.className = 'nors-lightbox';
+    overlay.innerHTML = `<button type="button" class="nors-lightbox-close" title="Fechar">✕</button><img src="${src}" alt="Ampliação da foto">`;
+    overlay.addEventListener('click', ()=> overlay.remove());
+    document.body.appendChild(overlay);
+  }
+
+  // ---------- Página Acidentes ----------
+  const ACIDENTES_KEY = 'nors-acidentes-dashboard';
+
+  async function loadAcidentesDashboard(){
+    if(state.acidentes !== undefined) return;
+    try{
+      const res = await window.storage.get(ACIDENTES_KEY, false);
+      state.acidentes = (res && res.value) ? JSON.parse(res.value) : null;
+    }catch(e){
+      state.acidentes = null;
+    }
+  }
+
+  function buildAcidentesDisplay(){
+    const wrap = document.getElementById('acidentesDisplay');
+    const meta = document.getElementById('acidentesMeta');
+    const dash = state.acidentes;
+    if(!dash){
+      meta.style.display = 'none';
+      wrap.innerHTML = '<span class="acidentes-empty">Nenhum dashboard anexado ainda. Cole um link ou anexe um arquivo acima.</span>';
+      return;
+    }
+    meta.style.display = 'flex';
+    const savedLabel = dash.savedAt ? new Date(dash.savedAt).toLocaleString('pt-BR') : '';
+    meta.innerHTML = `<span>Fonte: ${dash.type==='link' ? 'link externo' : (dash.type==='pdf' ? 'arquivo PDF' : 'imagem')}</span><span>${savedLabel ? 'Atualizado em '+esc(savedLabel) : ''}</span>`;
+    if(dash.type === 'link'){
+      wrap.innerHTML = `<iframe src="${esc(dash.value)}" title="Dashboard de acidentes" allowfullscreen></iframe>`;
+    }else if(dash.type === 'pdf'){
+      wrap.innerHTML = `<embed src="${dash.value}" type="application/pdf">`;
+    }else{
+      wrap.innerHTML = `<img src="${dash.value}" alt="Dashboard de acidentes" data-type="acidentes-open">`;
+    }
+  }
+
+  async function renderAcidentesPage(){
+    await loadAcidentesDashboard();
+    buildAcidentesDisplay();
+  }
+
+  document.getElementById('acidentesLinkSave').addEventListener('click', async ()=>{
+    const input = document.getElementById('acidentesLinkInput');
+    const url = input.value.trim();
+    if(!url){ alert('Cole o link de publicação do dashboard antes de salvar.'); return; }
+    if(/\.pbix($|\?)/i.test(url)){
+      alert('Esse é um link de arquivo .pbix, que não pode ser exibido no navegador.\n\nAbra o relatório no Power BI Desktop ou no serviço Power BI e use "Publicar na Web" para gerar um link do tipo https://app.powerbi.com/view?r=..., depois cole esse link aqui.');
+      return;
+    }
+    let parsed;
+    try{ parsed = new URL(url); }catch(e){ alert('Esse link não parece válido. Cole a URL completa (começando com https://).'); return; }
+    if(!/^https?:$/.test(parsed.protocol)){
+      alert('O link precisa começar com http:// ou https://.');
+      return;
+    }
+    state.acidentes = {type:'link', value:url, savedAt:Date.now()};
+    buildAcidentesDisplay();
+    try{
+      await window.storage.set(ACIDENTES_KEY, JSON.stringify(state.acidentes), false);
+    }catch(err){
+      alert('Não foi possível salvar o link do dashboard.');
+    }
+  });
+
+  document.getElementById('acidentesFileInput').addEventListener('change', function(e){
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    const finish = async (type, dataURL)=>{
+      state.acidentes = {type, value:dataURL, savedAt:Date.now()};
+      buildAcidentesDisplay();
+      try{
+        await window.storage.set(ACIDENTES_KEY, JSON.stringify(state.acidentes), false);
+      }catch(err){
+        alert('Não foi possível salvar o dashboard. Tente um arquivo menor.');
+      }
     };
+    if(file.type === 'application/pdf'){
+      const reader = new FileReader();
+      reader.onload = ev=> finish('pdf', ev.target.result);
+      reader.onerror = ()=> alert('Não foi possível ler esse PDF.');
+      reader.readAsDataURL(file);
+    }else{
+      resizeImageFile(file, 1600, 0.85).then(dataURL=> finish('image', dataURL))
+        .catch(()=> alert('Não foi possível processar essa imagem.'));
+    }
+    e.target.value = '';
+  });
 
-    dadosAssinatura[assinaturaTipoAtual] = registro;
+  document.getElementById('acidentesRemove').addEventListener('click', async ()=>{
+    if(!state.acidentes){ return; }
+    if(!confirm('Remover o dashboard de acidentes salvo?')) return;
+    state.acidentes = null;
+    document.getElementById('acidentesLinkInput').value = '';
+    buildAcidentesDisplay();
+    try{
+      await window.storage.delete(ACIDENTES_KEY, false);
+    }catch(err){ /* ignore */ }
+  });
 
-    renderizarAssinaturaAssinada(assinaturaTipoAtual, registro);
+  document.addEventListener('click', function(e){
+    const img = e.target.closest('[data-type="acidentes-open"]');
+    if(img) openLightbox(img.src);
+  });
 
-    fecharModal();
-
-}
-
-function renderizarAssinaturaAssinada(tipo, registro) {
-
-    const bloco = document.getElementById(tipo === 'tecnico' ? 'bloco-tecnico' : 'bloco-gestor');
-
-    bloco.innerHTML =
-        '<div class="assinatura-assinada">' +
-            '<div class="assinatura-assinada-topo">✔ Assinado digitalmente</div>' +
-            '<div class="assinatura-info">' +
-                '<div><strong>Nome:</strong> ' + escaparHtml(registro.nome) + '</div>' +
-                '<div><strong>CPF:</strong> ' + escaparHtml(registro.cpf) + '</div>' +
-                '<div><strong>Função:</strong> ' + escaparHtml(registro.funcao) + '</div>' +
-                '<div><strong>Assinado em:</strong> ' + registro.assinadoEm + '</div>' +
-            '</div>' +
-            '<div class="assinatura-imagem-wrap">' +
-                '<img src="' + registro.imagem + '" alt="Assinatura de ' + escaparHtml(registro.nome) + '">' +
-            '</div>' +
-            '<button class="btn-reassinar no-print" type="button" onclick="abrirModalAssinatura(\'' + tipo + '\')">↻ Assinar novamente</button>' +
-        '</div>';
-
-}
-
-function escaparHtml(texto) {
-
-    const div = document.createElement('div');
-    div.textContent = texto;
-    return div.innerHTML;
-
-}
-
+  goToPage('home');
+  loadData(state.year, state.branch);
+})();
 </script>
-
-
-</body>
-
-</html>
