@@ -2,23 +2,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root{
-  --bg:#e9edf1;
+  --bg:#e7e8ea;
   --panel:#ffffff;
-  --ink:#1c2530;
-  --muted:#6b7684;
-  --line:#d7dce2;
-  --accent:#e8590c;
-  --accent-dark:#c94a08;
-  --accent-soft:#fde6d5;
-  --teal:#1f7a6c;
-  --teal-soft:#dcf1ec;
-  --danger:#c23b3b;
-  --danger-soft:#fbe4e4;
-  --slate:#4a5a72;
-  --slate-soft:#e4e8ee;
-  --highlight:#fff1b8;
-  --ok:#1f7a34;
-  --ok-soft:#dff3e0;
+  --ink:#15171a;
+  --muted:#5c6167;
+  --line:#d4d6d9;
+  --accent:#2b2e33;
+  --accent-dark:#000000;
+  --accent-soft:#e5e6e8;
+  --teal:#1f6b56;
+  --teal-soft:#dbeee7;
+  --danger:#a3272c;
+  --danger-soft:#f7dede;
+  --slate:#33363c;
+  --slate-soft:#e2e3e6;
+  --highlight:#e9e4d3;
+  --ok:#1f6b3a;
+  --ok-soft:#dcefdf;
   --display:'Oswald',sans-serif;
   --body:'Barlow',sans-serif;
   --mono:'JetBrains Mono',monospace;
@@ -159,6 +159,7 @@
   border:1px solid var(--line);
   border-radius:0 8px 8px 8px;
   overflow:hidden;
+  box-shadow:0 2px 10px rgba(15,17,20,.06);
 }
 .table-scroll{overflow-x:auto;}
 table.nors-table{
@@ -230,7 +231,7 @@ table.nors-table th, table.nors-table td{
   background:var(--highlight);
   min-width:70px;
 }
-.fech-head .wlabel{color:#8a6d00;}
+.fech-head .wlabel{color:#5c5334;}
 .month-sep{border-left:2px solid var(--ink) !important;}
 input.cell-num{
   width:100%;
@@ -247,8 +248,8 @@ input.cell-num:focus, .week-head input:focus{
   outline-offset:-2px;
   background:#fff;
 }
-td.fech-cell{background:#fffdf3;}
-td.fech-cell input{font-weight:600;color:#8a6d00;}
+td.fech-cell{background:#f7f5ee;}
+td.fech-cell input{font-weight:600;color:#5c5334;}
 .fech-readonly{
   display:block;
   width:100%;
@@ -256,7 +257,7 @@ td.fech-cell input{font-weight:600;color:#8a6d00;}
   font-family:var(--mono);
   font-size:12.5px;
   font-weight:600;
-  color:#8a6d00;
+  color:#5c5334;
   padding:7px 2px;
 }
 tr.group-row td{
@@ -294,6 +295,7 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
   border-radius:8px;
   margin-bottom:12px;
   overflow:hidden;
+  box-shadow:0 1px 6px rgba(15,17,20,.05);
 }
 .comment-card summary{
   cursor:pointer;
@@ -311,19 +313,28 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
 .comment-card[open] summary::before{content:'▾';}
 .comment-grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(auto-fill, minmax(190px,1fr));
   gap:1px;
   background:var(--line);
 }
 .comment-grid div{background:var(--panel);padding:10px;}
 .comment-grid label{
-  display:block;
+  display:flex;
+  align-items:baseline;
+  gap:6px;
   font-family:var(--display);
   font-size:10.5px;
   letter-spacing:.5px;
-  color:var(--muted);
+  color:var(--ink);
   text-transform:uppercase;
   margin-bottom:5px;
+}
+.comment-grid label .wdate-inline{
+  font-family:var(--mono);
+  font-size:9.5px;
+  color:var(--muted);
+  text-transform:none;
+  letter-spacing:0;
 }
 .comment-grid textarea{
   width:100%;
@@ -389,7 +400,7 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
   font-family:var(--display);
   letter-spacing:3px;
   font-size:12.5px;
-  color:#f2a35c;
+  color:#c7cad0;
   text-transform:uppercase;
   margin:0 0 14px;
 }
@@ -405,7 +416,7 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
   padding:17px 36px;
   border-radius:6px;
   cursor:pointer;
-  box-shadow:0 10px 26px rgba(232,89,12,.45);
+  box-shadow:0 10px 26px rgba(0,0,0,.5);
 }
 .home-cta:hover{background:var(--accent-dark);}
 @media (max-width:640px){
@@ -655,7 +666,7 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
 
     <div class="comments-wrap">
       <h2>Comentários</h2>
-      <p>Um campo de observação por mês, para cada indicador do trimestre selecionado acima.</p>
+      <p>Um campo de observação por semana (W), para cada indicador do trimestre selecionado acima.</p>
       <div id="commentsWrap"></div>
     </div>
   </div>
@@ -806,10 +817,10 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
     {label:'T4 · Out–Dez', months:[9,10,11]},
   ];
   const GROUPS = {
-    seguranca:{label:'Segurança', color:'#c23b3b'},
-    agendamentos:{label:'Agendamentos & Passagens', color:'#e8590c'},
-    portaporta:{label:'Porta a Porta', color:'#1f7a6c'},
-    kaizen:{label:'Kaizen', color:'#4a5a72'},
+    seguranca:{label:'Segurança', color:'#7a2b2f'},
+    agendamentos:{label:'Agendamentos & Passagens', color:'#494c52'},
+    portaporta:{label:'Porta a Porta', color:'#28584c'},
+    kaizen:{label:'Kaizen', color:'#3a3d43'},
   };
   const METRICS = [
     {id:'acid_afast', label:'Qtde acidentes com afastamento', group:'seguranca', fech:'sum'},
@@ -1015,13 +1026,14 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
   }
 
   function buildComments(){
-    const q = QUARTERS[state.qIdx];
+    const weeks = kaizenWeeksOfQuarter(state.qIdx);
     let html = '';
     METRICS.forEach(m=>{
       html += `<details class="comment-card"><summary>${esc(m.label)}</summary><div class="comment-grid">`;
-      q.months.forEach(mi=>{
-        const val = esc(state.data.comments[m.id][mi] || '');
-        html += `<div><label>${MONTH_SHORT[mi]}</label><textarea data-type="comment" data-metric="${m.id}" data-mi="${mi}" placeholder="Observação de ${MONTH_SHORT[mi]}...">${val}</textarea></div>`;
+      weeks.forEach(gw=>{
+        const val = esc(state.data.comments[m.id][gw] || '');
+        const dateLabel = esc(weekRangeLabel(state.year, gw));
+        html += `<div><label>W${pad(gw)}<span class="wdate-inline">${dateLabel}</span></label><textarea data-type="comment" data-metric="${m.id}" data-gw="${gw}" placeholder="Observação da W${pad(gw)}...">${val}</textarea></div>`;
       });
       html += '</div></details>';
     });
@@ -1068,7 +1080,7 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
     }else if(type==='monthclose'){
       state.data.monthClose[t.dataset.mi] = t.value;
     }else if(type==='comment'){
-      state.data.comments[t.dataset.metric][t.dataset.mi] = t.value;
+      state.data.comments[t.dataset.metric][t.dataset.gw] = t.value;
     }else if(type==='kaizen-note'){
       state.data.kaizenNotes[t.dataset.gw] = t.value;
     }
