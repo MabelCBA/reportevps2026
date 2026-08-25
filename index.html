@@ -273,7 +273,7 @@ tr.group-row td{
 tr.metric-row .td-label{border-left:4px solid var(--grp-color,var(--slate));}
 tr.metric-row:nth-child(even) td:not(.td-label):not(.fech-cell){background:#fafbfc;}
 
-/* Meta Porta a Porta: abaixo de 150 min = verde, 150 min ou mais = vermelho */
+/* Metas por métrica: Porta a Porta Pit Stop (agendado/passante) = 60 min; Porta a Porta Oficina/Revisão Básica (agendado/passante) = 150 min; abaixo da meta = verde, na meta ou acima = vermelho. Kaizens implementados no fechamento: 10 ou mais = verde, 9 ou menos = vermelho. */
 td.pm-ok{background:var(--ok-soft) !important;}
 td.pm-bad{background:var(--danger-soft) !important;}
 td.pm-ok input.cell-num, td.pm-ok .fech-readonly{color:var(--ok);font-weight:700;}
@@ -620,6 +620,118 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
   color:var(--ink);
 }
 .kaizen-text:focus{outline:2px solid var(--accent);outline-offset:-2px;}
+
+/* Página Diário de Bordo */
+.diario-legend{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  align-items:center;
+  padding:14px 24px 0;
+}
+.diario-legend .legend-item{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-family:var(--body);
+  font-size:11.5px;
+  color:var(--muted);
+}
+.legend-dot{
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  display:inline-block;
+  border:1px solid rgba(0,0,0,.15);
+  flex:none;
+}
+.diario-wrap{padding:14px 24px 40px;}
+.diario-panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+  box-shadow:0 2px 10px rgba(15,17,20,.06);
+}
+table.diario-table{
+  border-collapse:collapse;
+  width:100%;
+  min-width:1180px;
+  font-family:var(--body);
+  font-size:12.5px;
+  background:var(--panel);
+}
+table.diario-table th, table.diario-table td{
+  border:1px solid var(--line);
+  padding:0;
+  vertical-align:top;
+}
+.diario-table thead th{
+  background:#f2f4f6;
+  font-family:var(--display);
+  font-size:11px;
+  letter-spacing:.4px;
+  text-transform:uppercase;
+  color:var(--ink);
+  padding:9px 8px !important;
+  text-align:center;
+}
+.diario-num{
+  text-align:center;
+  font-family:var(--mono);
+  font-weight:600;
+  color:var(--muted);
+  padding:8px 4px !important;
+  background:#fafbfc;
+}
+.diario-table input[type="text"], .diario-table input[type="date"], .diario-table textarea, .diario-table select{
+  width:100%;
+  border:none;
+  background:transparent;
+  font-family:var(--body);
+  font-size:12.5px;
+  padding:8px 8px;
+  color:var(--ink);
+}
+.diario-table textarea{min-height:58px;resize:vertical;line-height:1.35;}
+.diario-table input:focus, .diario-table select:focus, .diario-table textarea:focus{
+  outline:2px solid var(--accent);
+  outline-offset:-2px;
+  background:#fff;
+}
+.diario-status-select{
+  font-weight:600;
+  color:#fff !important;
+  cursor:pointer;
+}
+.diario-status-select option{color:var(--ink);background:#fff;font-weight:500;}
+.diario-kaizen-cell{padding:2px !important;}
+.diario-kaizen-cell select{padding:7px 8px;}
+.diario-kaizen-cell input{
+  border-top:1px solid var(--line) !important;
+  font-size:11.5px !important;
+  padding:5px 8px !important;
+  color:var(--muted);
+}
+.diario-row-actions{text-align:center;padding:4px !important;background:#fafbfc;}
+.diario-del-btn{
+  border:none;
+  background:transparent;
+  color:var(--danger);
+  cursor:pointer;
+  font-size:15px;
+  padding:6px 8px;
+  line-height:1;
+}
+.diario-del-btn:hover{color:var(--accent-dark);}
+.diario-empty-row td{
+  text-align:center;
+  padding:28px 12px !important;
+  color:var(--muted);
+  font-family:var(--body);
+  font-size:12.5px;
+}
+.diario-add-wrap{padding:14px 24px 0;}
 </style>
 
 <div id="nors-app">
@@ -630,6 +742,7 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
     <button class="page-nav-btn" data-page="vps">Reporte VPS</button>
     <button class="page-nav-btn" data-page="kaizen">Kaizens Destaque</button>
     <button class="page-nav-btn" data-page="acidentes">Acidentes</button>
+    <button class="page-nav-btn" data-page="diario">Diário de Bordo</button>
   </div>
 
   <div id="page-home" class="home-page">
@@ -712,6 +825,45 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
       <div class="acidentes-meta" id="acidentesMeta" style="display:none"></div>
       <div class="acidentes-display" id="acidentesDisplay">
         <span class="acidentes-empty">Nenhum dashboard anexado ainda. Cole um link ou anexe um arquivo acima.</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-diario" style="display:none">
+    <div class="nors-header">
+      <div class="nors-title">
+        <h1>Diário de <span>Bordo</span></h1>
+        <p id="diarioSubtitle">Registro de problemas, desvios e oportunidades</p>
+      </div>
+      <div class="nors-controls">
+        <span id="diarioSavePill" class="save-pill">salvo</span>
+      </div>
+    </div>
+    <div class="diario-legend" id="diarioLegend"></div>
+    <div class="diario-add-wrap">
+      <button class="btn-ghost" id="diarioAddRow">+ Adicionar linha</button>
+    </div>
+    <div class="diario-wrap">
+      <div class="diario-panel">
+        <div class="table-scroll">
+          <table class="diario-table">
+            <thead>
+              <tr>
+                <th style="width:38px">Nº</th>
+                <th style="width:110px">Data registro</th>
+                <th style="width:130px">Setor</th>
+                <th style="min-width:220px">Descrição de Problemas / Desvios / Oportunidades</th>
+                <th style="min-width:220px">Ação</th>
+                <th style="width:130px">Kaizen (Sim/Não)<br><span style="text-transform:none;font-weight:400;font-size:9.5px;color:var(--muted)">Em caso de SIM, colocar o Código</span></th>
+                <th style="width:120px">Resp.</th>
+                <th style="width:170px">Status</th>
+                <th style="width:120px">Prazo Conclusão Ação</th>
+                <th style="width:34px"></th>
+              </tr>
+            </thead>
+            <tbody id="diarioBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -830,15 +982,13 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
     {id:'qtd_agend', label:'Qtde de agendados (PIT STOP + OF)', group:'agendamentos', fech:'sum'},
     {id:'agend_comp', label:'Qtde agendados comparecidos (PIT STOP+OFICINA)', group:'agendamentos', fech:'sum'},
     {id:'passagens', label:'Qtde passagens (PIT STOP + OF)', group:'agendamentos', fech:'sum'},
-    {id:'pp_agend_ps', label:'Porta a Porta agendados (PIT STOP) — min', group:'portaporta', fech:'avg'},
-    {id:'pp_nagend_ps', label:'Porta a Porta não agendados (PIT STOP) — min', group:'portaporta', fech:'avg'},
-    {id:'pp_agend_of', label:'Porta a Porta agendados (OFICINA) — min', group:'portaporta', fech:'avg'},
-    {id:'pp_nagend_of', label:'Porta a Porta não agendados (OFICINA) — min', group:'portaporta', fech:'avg'},
+    {id:'pp_agend_ps', label:'Porta a Porta agendados (PIT STOP) — min', group:'portaporta', fech:'avg', pmMeta:60, pmDir:'below', pmScope:'both'},
+    {id:'pp_nagend_ps', label:'Porta a Porta não agendados / passante (PIT STOP) — min', group:'portaporta', fech:'avg', pmMeta:60, pmDir:'below', pmScope:'both'},
+    {id:'pp_agend_of', label:'Porta a Porta agendados (OFICINA) — min', group:'portaporta', fech:'avg', pmMeta:150, pmDir:'below', pmScope:'both'},
+    {id:'pp_nagend_of', label:'Porta a Porta não agendados / passante (OFICINA) — min', group:'portaporta', fech:'avg', pmMeta:150, pmDir:'below', pmScope:'both'},
     {id:'kaizen_elab', label:'Quant. Kaizens elaborados', group:'kaizen', fech:'sum'},
-    {id:'kaizen_impl', label:'Quant. Kaizens implementados', group:'kaizen', fech:'sum'},
+    {id:'kaizen_impl', label:'Quant. Kaizens implementados', group:'kaizen', fech:'sum', pmMeta:10, pmDir:'above', pmScope:'fech'},
   ];
-
-  const PORTA_META_MIN = 150; // meta Porta a Porta: abaixo disso = verde, senão = vermelho
 
   const BRANCHES = [
     {id:'cuiaba', label:'Cuiabá'},
@@ -848,7 +998,15 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
     {id:'rondonopolis', label:'Rondonópolis'},
   ];
 
-  let state = { page:'home', year:2026, branch:BRANCHES[0].id, qIdx:0, kQIdx:0, data:null, kaizenPhotos:{}, acidentes:undefined, saveTimer:null };
+  const DIARIO_STATUS = [
+    {id:'sem_definicao', label:'Sem definição', color:'#9099a3'},
+    {id:'planejada', label:'Ação planejada', color:'#c9a227'},
+    {id:'executada', label:'Ação Executada', color:'#2b6cb0'},
+    {id:'resultados', label:'Resultados', color:'#1f6b56'},
+    {id:'fechado', label:'Fechado/Padronizado', color:'#15171a'},
+  ];
+
+  let state = { page:'home', year:2026, branch:BRANCHES[0].id, qIdx:0, kQIdx:0, data:null, kaizenPhotos:{}, acidentes:undefined, diario:null, diarioSaveTimer:null, saveTimer:null };
 
   function blankData(year){
     const values={}, fechMes={}, comments={}, kaizenNotes={};
@@ -863,9 +1021,12 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
   }
   function photoKey(year, gw){return 'nors-porto-velho-kaizen-foto:'+year+':'+gw;}
   function branchLabel(id){ const b = BRANCHES.find(x=>x.id===id); return b ? b.label : id; }
-  function pmClass(v){
+  function pmClass(v, meta, dir){
     if(v===null || v===undefined || v==='' || isNaN(v)) return '';
-    return Number(v) < PORTA_META_MIN ? 'pm-ok' : 'pm-bad';
+    if(!meta && meta!==0) return '';
+    const n = Number(v);
+    if(dir === 'above') return n >= meta ? 'pm-ok' : 'pm-bad';
+    return n < meta ? 'pm-ok' : 'pm-bad'; // dir 'below' (padrão): abaixo da meta = verde
   }
 
   function buildBranchSelect(){
@@ -895,6 +1056,7 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
     setSavePill('salvo', false);
     render();
     if(state.page === 'kaizen') renderKaizenPage();
+    if(state.page === 'diario') renderDiarioPage();
   }
   // Mantido por compatibilidade (recarrega ano na filial atual)
   function loadYear(year){ return loadData(year, state.branch); }
@@ -998,25 +1160,31 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
       if(m.group !== lastGroup){
         const g = GROUPS[m.group];
         const span = q.months.length*5 + 1;
-        const note = m.group==='portaporta' ? `<span class="group-note">· meta: abaixo de ${PORTA_META_MIN} min</span>` : '';
-        html += `<tr class="group-row" style="background:${g.color}"><td colspan="${span}" style="background:${g.color}">${g.label}${note}</td></tr>`;
+        html += `<tr class="group-row" style="background:${g.color}"><td colspan="${span}" style="background:${g.color}">${g.label}</td></tr>`;
         lastGroup = m.group;
       }
       const g = GROUPS[m.group];
-      const isPorta = m.group === 'portaporta';
-      html += `<tr class="metric-row" style="--grp-color:${g.color}"><td class="td-label">${esc(m.label)}</td>`;
+      const hasPm = !!m.pmMeta || m.pmMeta===0;
+      const pmScope = m.pmScope || 'both';
+      let metaNote = '';
+      if(hasPm){
+        metaNote = pmScope === 'fech'
+          ? ` <span class="group-note">· meta no fechamento: ${m.pmDir==='above' ? m.pmMeta+' ou mais = verde' : 'abaixo de '+m.pmMeta+' = verde'}</span>`
+          : ` <span class="group-note">· meta: ${m.pmDir==='above' ? m.pmMeta+' ou mais = verde' : 'abaixo de '+m.pmMeta+' min = verde'}</span>`;
+      }
+      html += `<tr class="metric-row" style="--grp-color:${g.color}"><td class="td-label">${esc(m.label)}${metaNote}</td>`;
       q.months.forEach(mi=>{
         for(let w=1; w<=4; w++){
           const gw = weekGlobal(mi,w);
           const v = state.data.values[m.id][gw];
           const sep = w===1 ? ' month-sep' : '';
-          const pmCls = isPorta ? pmClass(v) : '';
+          const pmCls = (hasPm && pmScope !== 'fech') ? pmClass(v, m.pmMeta, m.pmDir) : '';
           const cls = [sep.trim(), pmCls].filter(Boolean).join(' ');
           html += `<td class="${cls}"><input class="cell-num" type="number" inputmode="numeric" data-type="value" data-metric="${m.id}" data-gw="${gw}" value="${v!==undefined && v!==null ? v : ''}"></td>`;
         }
         const fv = computeFech(m, mi);
         const tag = m.fech === 'avg' ? 'méd' : 'soma';
-        const fechPmCls = isPorta ? ' ' + pmClass(fv) : '';
+        const fechPmCls = hasPm ? ' ' + pmClass(fv, m.pmMeta, m.pmDir) : '';
         html += `<td class="fech-cell${fechPmCls}" data-fech-metric="${m.id}" data-fech-mi="${mi}" title="${tag} das W${pad(weekGlobal(mi,1))}–W${pad(weekGlobal(mi,4))}"><span class="fech-readonly">${fmtFech(fv)}</span></td>`;
       });
       html += '</tr>';
@@ -1062,16 +1230,19 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
       const fechTd = document.querySelector(`[data-fech-metric="${metricId}"][data-fech-mi="${mi}"]`);
       const cell = fechTd ? fechTd.querySelector('.fech-readonly') : null;
       if(cell) cell.textContent = fmtFech(newFech);
-      if(m.group === 'portaporta'){
-        const td = t.closest('td');
-        if(td){
-          td.classList.remove('pm-ok','pm-bad');
-          const cls = pmClass(val);
-          if(cls) td.classList.add(cls);
+      if(m.pmMeta || m.pmMeta===0){
+        const pmScope = m.pmScope || 'both';
+        if(pmScope !== 'fech'){
+          const td = t.closest('td');
+          if(td){
+            td.classList.remove('pm-ok','pm-bad');
+            const cls = pmClass(val, m.pmMeta, m.pmDir);
+            if(cls) td.classList.add(cls);
+          }
         }
         if(fechTd){
           fechTd.classList.remove('pm-ok','pm-bad');
-          const fcls = pmClass(newFech);
+          const fcls = pmClass(newFech, m.pmMeta, m.pmDir);
           if(fcls) fechTd.classList.add(fcls);
         }
       }
@@ -1135,10 +1306,12 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
     document.getElementById('page-vps').style.display = p==='vps' ? '' : 'none';
     document.getElementById('page-kaizen').style.display = p==='kaizen' ? '' : 'none';
     document.getElementById('page-acidentes').style.display = p==='acidentes' ? '' : 'none';
+    document.getElementById('page-diario').style.display = p==='diario' ? '' : 'none';
     document.getElementById('pageNav').style.display = p==='home' ? 'none' : 'flex';
     document.querySelectorAll('.page-nav-btn').forEach(b=> b.classList.toggle('active', b.dataset.page===p));
     if(p==='kaizen') renderKaizenPage();
     if(p==='acidentes') renderAcidentesPage();
+    if(p==='diario') renderDiarioPage();
   }
   document.querySelectorAll('.page-nav-btn').forEach(btn=>{
     btn.addEventListener('click', ()=> goToPage(btn.dataset.page));
@@ -1411,6 +1584,146 @@ td.pm-bad input.cell-num, td.pm-bad .fech-readonly{color:var(--danger);font-weig
   document.addEventListener('click', function(e){
     const img = e.target.closest('[data-type="acidentes-open"]');
     if(img) openLightbox(img.src);
+  });
+
+  // ---------- Página Diário de Bordo ----------
+  function diarioKey(year, branch){ return 'nors-diario-'+branch+':'+year; }
+
+  function blankDiario(){ return { rows: [] }; }
+
+  function newDiarioRowId(){ return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+
+  function setDiarioSavePill(text, active){
+    const p = document.getElementById('diarioSavePill');
+    if(!p) return;
+    p.textContent = text;
+    p.classList.toggle('saving', !!active);
+  }
+
+  async function loadDiario(year, branch){
+    setDiarioSavePill('carregando…', true);
+    let loaded = null;
+    try{
+      const res = await window.storage.get(diarioKey(year, branch), false);
+      if(res && res.value) loaded = JSON.parse(res.value);
+    }catch(e){ /* not found or error -> blank */ }
+    state.diario = (loaded && Array.isArray(loaded.rows)) ? loaded : blankDiario();
+    setDiarioSavePill('salvo', false);
+  }
+
+  function debounceSaveDiario(){
+    setDiarioSavePill('salvando…', true);
+    clearTimeout(state.diarioSaveTimer);
+    state.diarioSaveTimer = setTimeout(async ()=>{
+      try{
+        await window.storage.set(diarioKey(state.year, state.branch), JSON.stringify(state.diario), false);
+        setDiarioSavePill('salvo', false);
+      }catch(e){
+        setDiarioSavePill('não salvo (offline)', true);
+      }
+    }, 500);
+  }
+
+  function buildDiarioLegend(){
+    const wrap = document.getElementById('diarioLegend');
+    if(!wrap) return;
+    wrap.innerHTML = DIARIO_STATUS.map(s=>
+      `<span class="legend-item"><span class="legend-dot" style="background:${s.color}"></span>${esc(s.label)}</span>`
+    ).join('');
+  }
+
+  function diarioRowHtml(r, idx){
+    const st = DIARIO_STATUS.find(s=>s.id===r.status) || DIARIO_STATUS[0];
+    const codigoVisible = r.kaizen === 'sim';
+    return `<tr data-row-id="${r.id}">
+      <td class="diario-num">${idx+1}</td>
+      <td><input type="date" data-type="diario-field" data-field="dataRegistro" value="${esc(r.dataRegistro)}"></td>
+      <td><input type="text" data-type="diario-field" data-field="setor" value="${esc(r.setor)}" placeholder="Setor"></td>
+      <td><textarea data-type="diario-field" data-field="descricao" placeholder="Descreva o problema, desvio ou oportunidade...">${esc(r.descricao)}</textarea></td>
+      <td><textarea data-type="diario-field" data-field="acao" placeholder="Descreva a ação...">${esc(r.acao)}</textarea></td>
+      <td class="diario-kaizen-cell">
+        <select data-type="diario-field" data-field="kaizen">
+          <option value="nao" ${r.kaizen==='sim' ? '' : 'selected'}>Não</option>
+          <option value="sim" ${r.kaizen==='sim' ? 'selected' : ''}>Sim</option>
+        </select>
+        <input type="text" data-type="diario-field" data-field="kaizenCodigo" value="${esc(r.kaizenCodigo)}" placeholder="Código do Kaizen" ${codigoVisible ? '' : 'style="display:none"'}>
+      </td>
+      <td><input type="text" data-type="diario-field" data-field="resp" value="${esc(r.resp)}" placeholder="Responsável"></td>
+      <td><select class="diario-status-select" data-type="diario-field" data-field="status" style="background:${st.color}">
+        ${DIARIO_STATUS.map(s=>`<option value="${s.id}" ${s.id===r.status ? 'selected' : ''}>${esc(s.label)}</option>`).join('')}
+      </select></td>
+      <td><input type="date" data-type="diario-field" data-field="prazo" value="${esc(r.prazo)}"></td>
+      <td class="diario-row-actions"><button type="button" class="diario-del-btn" data-type="diario-remove" title="Remover linha">✕</button></td>
+    </tr>`;
+  }
+
+  function buildDiarioTable(){
+    const tbody = document.getElementById('diarioBody');
+    if(!tbody) return;
+    const rows = (state.diario && state.diario.rows) || [];
+    if(rows.length === 0){
+      tbody.innerHTML = `<tr class="diario-empty-row"><td colspan="10">Nenhum registro ainda. Clique em "+ Adicionar linha" para começar.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = rows.map((r, idx)=> diarioRowHtml(r, idx)).join('');
+  }
+
+  function addDiarioRow(){
+    if(!state.diario) state.diario = blankDiario();
+    state.diario.rows.push({
+      id:newDiarioRowId(), dataRegistro:'', setor:'', descricao:'', acao:'',
+      kaizen:'nao', kaizenCodigo:'', resp:'', status:'sem_definicao', prazo:''
+    });
+    buildDiarioTable();
+    debounceSaveDiario();
+  }
+
+  function removeDiarioRow(id){
+    if(!state.diario) return;
+    state.diario.rows = state.diario.rows.filter(r=> r.id !== id);
+    buildDiarioTable();
+    debounceSaveDiario();
+  }
+
+  async function renderDiarioPage(){
+    const subtitle = document.getElementById('diarioSubtitle');
+    if(subtitle) subtitle.textContent = 'Registro de problemas, desvios e oportunidades · Filial: ' + branchLabel(state.branch) + ' · ' + state.year;
+    buildDiarioLegend();
+    await loadDiario(state.year, state.branch);
+    buildDiarioTable();
+  }
+
+  document.getElementById('diarioAddRow').addEventListener('click', addDiarioRow);
+
+  function diarioFieldHandler(e){
+    const t = e.target;
+    if(!t.dataset || t.dataset.type !== 'diario-field') return;
+    const tr = t.closest('tr[data-row-id]');
+    if(!tr || !state.diario) return;
+    const row = state.diario.rows.find(r=> r.id === tr.dataset.rowId);
+    if(!row) return;
+    const field = t.dataset.field;
+    row[field] = t.value;
+    if(field === 'kaizen'){
+      const codigoInput = tr.querySelector('[data-field="kaizenCodigo"]');
+      if(codigoInput) codigoInput.style.display = t.value === 'sim' ? '' : 'none';
+    }
+    if(field === 'status'){
+      const st = DIARIO_STATUS.find(s=> s.id === t.value) || DIARIO_STATUS[0];
+      t.style.background = st.color;
+    }
+    debounceSaveDiario();
+  }
+  document.addEventListener('input', diarioFieldHandler);
+  document.addEventListener('change', diarioFieldHandler);
+
+  document.addEventListener('click', function(e){
+    const delBtn = e.target.closest('[data-type="diario-remove"]');
+    if(!delBtn) return;
+    const tr = delBtn.closest('tr[data-row-id]');
+    if(!tr) return;
+    if(!confirm('Remover esta linha do Diário de Bordo?')) return;
+    removeDiarioRow(tr.dataset.rowId);
   });
 
   goToPage('home');
