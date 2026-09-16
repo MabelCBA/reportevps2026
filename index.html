@@ -1131,7 +1131,14 @@ table.cons-branch-table tfoot td{
   function storageKey(year, branch){
     return branch==='portovelho' ? 'nors-porto-velho:'+year : 'nors-'+branch+':'+year;
   }
-  function photoKey(year, gw){return 'nors-porto-velho-kaizen-foto:'+year+':'+gw;}
+  // Fotos dos Kaizens Destaque separadas por filial.
+  // Porto Velho mantém a chave antiga (fotos já existentes); demais filiais usam chave própria.
+  function photoKey(year, gw, branch){
+    const b = branch || state.branch;
+    return b==='portovelho'
+      ? 'nors-porto-velho-kaizen-foto:'+year+':'+gw
+      : 'nors-'+b+'-kaizen-foto:'+year+':'+gw;
+  }
   function branchLabel(id){ const b = BRANCHES.find(x=>x.id===id); return b ? b.label : id; }
   function pmClass(v, meta, dir){
     if(v===null || v===undefined || v==='' || isNaN(v)) return '';
@@ -1524,10 +1531,11 @@ table.cons-branch-table tfoot td{
 
   async function loadKaizenQuarterPhotos(qIdx){
     const weeks = kaizenWeeksOfQuarter(qIdx);
+    const branch = state.branch;
     await Promise.all(weeks.map(async gw=>{
       if(state.kaizenPhotos[gw] !== undefined) return;
       try{
-        const res = await window.storage.get(photoKey(state.year, gw), false);
+        const res = await window.storage.get(photoKey(state.year, gw, branch), false);
         state.kaizenPhotos[gw] = (res && res.value) ? parsePhotosValue(res.value) : [];
       }catch(e){
         state.kaizenPhotos[gw] = [];
@@ -1539,9 +1547,9 @@ table.cons-branch-table tfoot td{
     const photos = state.kaizenPhotos[gw] || [];
     try{
       if(photos.length === 0){
-        await window.storage.delete(photoKey(state.year, gw), false);
+        await window.storage.delete(photoKey(state.year, gw, state.branch), false);
       }else{
-        await window.storage.set(photoKey(state.year, gw), JSON.stringify(photos), false);
+        await window.storage.set(photoKey(state.year, gw, state.branch), JSON.stringify(photos), false);
       }
     }catch(err){
       alert('Não foi possível salvar a(s) foto(s). Tente uma imagem menor.');
