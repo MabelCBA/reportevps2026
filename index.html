@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reporte VPS · Nors CO</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap');
+:root{color-scheme:light;--bg:#eceff3;--panel:#fff;--panel2:#f5f7fa;--ink:#0f2233;--muted:#5b6b7a;--line:#d9e0e7;--accent:#1d5fa6;--accent-soft:#e3edf8;--teal:#1f6b56;--teal-soft:#dbeee7;--danger:#b3262c;--danger-soft:#fbe3e3;--slate:#2b3d4f;--slate-2:#0f2233;--slate-soft:#e4e9ee;--highlight:#f3eed9;--ok:#1f7a45;--ok-soft:#dcf1e2;--track:#e3e8ed;--hl:#eef3f9;--sep:#2b3d4f;--deep:#0c1a27;--shadow:0 1px 2px rgba(15,34,51,.06),0 10px 28px -14px rgba(15,34,51,.22);--display:'Barlow Condensed','Arial Narrow',sans-serif;--body:'Barlow',system-ui,sans-serif;--mono:'Barlow',system-ui,sans-serif}
+:root[data-theme=dark]{color-scheme:dark;--bg:#0a131c;--panel:#101d2a;--panel2:#142435;--ink:#e8eef4;--muted:#8da0b2;--line:#22364a;--accent:#5aa2ee;--accent-soft:#16304c;--teal:#4cc3a0;--teal-soft:#0f3329;--danger:#ff8086;--danger-soft:#3a1a1e;--slate:#1d3045;--slate-2:#14222f;--slate-soft:#172838;--highlight:#27261a;--ok:#5bd48c;--ok-soft:#10301f;--track:#223548;--hl:#15283a;--sep:#4a6580;--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.6)}
+*{box-sizing:border-box}html{scroll-padding-top:70px}body{margin:0;background:var(--bg)}
+#nors-app{font-family:var(--body);color:var(--ink);background:var(--bg);min-height:100vh;padding-bottom:64px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.page-nav{display:none;position:sticky;top:0;z-index:60;align-items:center;gap:4px;padding:0 28px;background:var(--deep);overflow-x:auto;scrollbar-width:none}
+.nav-brand{font:700 21px var(--display);color:#fff;letter-spacing:.4px;margin-right:20px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.nav-brand i{font:600 11px var(--body);font-style:normal;background:#2f7fd6;padding:2px 7px;border-radius:99px}
+.page-nav-btn{font:500 14px var(--body);color:#9db0c3;background:none;border:0;padding:17px 14px;cursor:pointer;position:relative;white-space:nowrap;transition:color .15s}
+.page-nav-btn:hover,.page-nav-btn.active{color:#fff}
+.page-nav-btn.active::after{content:'';position:absolute;left:14px;right:14px;bottom:0;height:3px;border-radius:3px 3px 0 0;background:#5aa2ee}
+.home-page{position:relative;min-height:100vh;display:flex;align-items:flex-end;padding:56px 7vw 6vh;color:#fff;background:linear-gradient(100deg,rgba(7,14,21,.93) 0%,rgba(7,14,21,.6) 50%,rgba(7,14,21,.15) 100%),linear-gradient(0deg,rgba(7,14,21,.85) 0%,transparent 45%),url('https://commons.wikimedia.org/wiki/Special:FilePath/Volvo_FH_540_at_IAA_2014._Free_images_Spielvogel.jpg') center 40%/cover no-repeat;background-color:#0c1a27}
+.home-inner{max-width:780px;width:100%}.home-inner>*{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}.home-inner>:nth-child(2){animation-delay:.08s}.home-inner>:nth-child(3){animation-delay:.16s}.home-inner>:nth-child(4){animation-delay:.24s}.home-inner>:nth-child(5){animation-delay:.32s}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}}
+.home-chip{display:inline-block;font-size:13px;font-weight:600;padding:6px 14px;border-radius:99px;background:rgba(255,255,255,.13);backdrop-filter:blur(6px);margin-bottom:18px}.home-chip:empty{display:none}
+.home-title{font:700 clamp(52px,9vw,112px)/.92 var(--display);margin:0 0 18px}
+.home-lead{font-size:clamp(16px,1.6vw,19px);line-height:1.5;color:#c9d6e2;max-width:520px;margin:0 0 28px}
+.home-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:44px}
+.home-cta,.home-sec{font:700 16px var(--body);padding:16px 30px;border-radius:10px;cursor:pointer;transition:.18s}
+.home-cta{background:#2f7fd6;color:#fff;border:0;box-shadow:0 10px 26px rgba(0,0,0,.4)}.home-cta:hover{background:#4a93e6;transform:translateY(-1px)}
+.home-sec{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4);font-weight:600}.home-sec:hover{background:rgba(255,255,255,.12)}
+.home-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border-top:1px solid rgba(255,255,255,.25)}
+.home-tiles button{text-align:left;background:none;border:0;border-left:1px solid rgba(255,255,255,.18);padding:16px 18px 10px;color:#fff;cursor:pointer;font:600 16px var(--body);transition:background .2s}
+.home-tiles button:first-child{border-left:0;padding-left:0}.home-tiles button:hover{background:rgba(255,255,255,.07)}
+.home-tiles small{display:block;font-weight:400;font-size:12.5px;color:#a9bccd;margin-top:4px}
+.nors-header{background:var(--panel);border-bottom:1px solid var(--line);padding:22px 28px 18px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.nors-title h1{font:700 34px/1.05 var(--display);margin:0}.nors-title h1 span{color:var(--accent)}.nors-title p{margin:6px 0 0;color:var(--muted);font-size:14px}
+.nors-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.year-stepper{display:flex;align-items:center;background:var(--slate-soft);border-radius:8px}
+.year-stepper button{border:0;background:none;font-size:18px;width:34px;height:36px;cursor:pointer;border-radius:8px}.year-stepper button:hover{background:var(--line)}
+.year-stepper .yr{min-width:48px;text-align:center;font-weight:700;font-size:15px}
+.branch-select{font-size:13.5px;font-weight:600;border:1px solid var(--line);background:var(--panel);padding:8px 12px;border-radius:8px;cursor:pointer;max-width:180px}
+.save-pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;padding:6px 12px;border-radius:99px;background:var(--teal-soft);color:var(--teal);white-space:nowrap}
+.save-pill::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor}.save-pill.saving{background:var(--accent-soft);color:var(--accent)}.save-pill.saving::before{animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.week-chip{font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:99px;border:1px solid var(--line);background:var(--panel);cursor:pointer}.week-chip:hover{border-color:var(--accent);color:var(--accent)}.week-chip:empty{display:none}
+.btn-ghost{font-size:13px;font-weight:600;border:1px solid var(--line);background:var(--panel);padding:8px 14px;border-radius:8px;cursor:pointer;transition:.15s}.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}.btn-ghost:active{transform:translateY(1px)}
+.nors-tabs{display:flex;gap:2px;margin:20px 28px 14px;padding:4px;background:var(--slate-soft);border-radius:10px;width:max-content;max-width:calc(100% - 56px);overflow-x:auto}
+.nors-tab{font:600 13.5px var(--body);padding:8px 16px;border:0;border-radius:7px;background:none;color:var(--muted);cursor:pointer;white-space:nowrap;transition:.15s}.nors-tab:hover{color:var(--ink)}
+.nors-tab.active{background:var(--panel);color:var(--ink);box-shadow:0 1px 3px rgba(15,34,51,.18)}
+.nors-panel{background:var(--panel);margin:0 28px;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.table-scroll{overflow-x:auto}#tableWrap,#consTableWrap{overflow:auto;max-height:calc(100vh - 150px)}
+table.nors-table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
+table.nors-table th,table.nors-table td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:0}
+table.nors-table .th-label,table.nors-table .td-label{position:sticky;left:0;z-index:3;background:var(--panel);text-align:left;padding:8px 12px;font-weight:500;min-width:260px;max-width:260px;line-height:1.3}
+table.nors-table thead th{position:sticky;top:0;z-index:5}table.nors-table thead tr:nth-child(2) th{top:38px}table.nors-table thead tr:first-child th{height:38px}
+table.nors-table thead th.th-label{z-index:7;background:var(--panel2)}
+table.nors-table th.month-head{text-align:center;font:600 15px/38px var(--display);letter-spacing:.8px;color:#fff;border-right-color:rgba(255,255,255,.18)}
+table.nors-table th.week-head{text-align:center;padding:6px 2px 7px;background:var(--panel2);min-width:66px}
+.week-head .wlabel{display:block;font:700 13px var(--display);letter-spacing:.4px;margin-bottom:1px}.week-head .wdate{display:block;font-size:10.5px;color:var(--muted)}
+.week-head input{width:100%;border:0;background:transparent;text-align:center;font-size:11px;color:var(--muted);padding:2px}
+table.nors-table th.fech-head{background:var(--highlight);min-width:76px}table.nors-table .month-sep{border-left:2px solid var(--sep)}
+input.cell-num{width:100%;border:0;background:transparent;text-align:center;font-size:13px;padding:8px 2px;-moz-appearance:textfield;appearance:textfield}
+input.cell-num::-webkit-outer-spin-button,input.cell-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input.cell-num:focus,.week-head input:focus{outline:2px solid var(--accent);outline-offset:-2px;background:var(--panel);border-radius:2px}
+td.fech-cell{background:var(--highlight)}.fech-readonly{display:block;width:100%;text-align:center;font-weight:700;padding:8px 2px;font-size:13px}
+tr.group-row td{position:sticky;left:0;padding:8px 12px;font:600 14px var(--body);color:#fff;letter-spacing:.2px}
+tr.metric-row .td-label{box-shadow:inset 4px 0 0 var(--grp-color,var(--slate))}
+tr.metric-row:hover td:not(.pm-ok):not(.pm-bad):not(.fech-cell),tr.metric-row:hover .td-label,td.col-hl:not(.pm-ok):not(.pm-bad):not(.fech-cell){background:var(--hl)}
+table.nors-table th.week-head.col-hl{background:var(--accent-soft)}
+table.nors-table th.is-now{box-shadow:inset 0 3px 0 var(--accent)}table.nors-table td.is-now:not(.pm-ok):not(.pm-bad):not(.fech-cell){background:var(--accent-soft)}
+td.pm-ok{background:var(--ok-soft)!important}td.pm-bad{background:var(--danger-soft)!important}
+td.pm-ok input.cell-num,td.pm-ok .fech-readonly{color:var(--ok);font-weight:700}td.pm-bad input.cell-num,td.pm-bad .fech-readonly{color:var(--danger);font-weight:700}
+.group-note{font-weight:400;font-size:11px;color:var(--muted);margin-left:6px}
+.comments-wrap{padding:28px 28px 4px}.comments-wrap h2{font:700 24px var(--display);margin:0 0 4px}.comments-wrap>p{color:var(--muted);font-size:13.5px;margin:0 0 14px}
+.comment-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden}
+.comment-card summary{cursor:pointer;padding:12px 16px;font-weight:600;font-size:14px;list-style:none;display:flex;align-items:center;gap:10px}.comment-card summary:hover{background:var(--panel2)}
+.comment-card summary::-webkit-details-marker{display:none}
+.comment-card summary::before{content:'';width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(-45deg);transition:transform .2s}
+.comment-card[open] summary::before{transform:rotate(45deg)}.comment-card[open] summary{border-bottom:1px solid var(--line)}
+.comment-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1px;background:var(--line)}.comment-grid div{background:var(--panel);padding:12px}
+.comment-grid label{display:flex;align-items:baseline;gap:8px;font:700 14px var(--display);margin-bottom:6px}.comment-grid label .wdate-inline{font:400 11px var(--body);color:var(--muted)}
+.comment-grid textarea{width:100%;min-height:64px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;resize:vertical;background:var(--panel2)}
+.comment-grid textarea:focus{outline:2px solid var(--accent);outline-offset:-1px;background:var(--panel)}
+.kaizen-year-note{font-size:13px;color:var(--muted)}.kaizen-wrap{padding:6px 28px 40px}.kaizen-wrap>p{color:var(--muted);font-size:13.5px;margin:0 0 16px}
+.kaizen-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.kaizen-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:border-color .2s}.kaizen-card:focus-within{border-color:var(--accent)}
+.kaizen-card-head{padding:10px 14px;font:700 17px var(--display);display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);background:var(--panel2)}.kaizen-card-head .wdate{font:500 12px var(--body);color:var(--muted)}
+.kaizen-photo-zone{position:relative;display:flex;flex-wrap:wrap;align-content:flex-start;gap:8px;padding:10px;min-height:104px;border-bottom:1px solid var(--line);transition:background .15s}
+.kaizen-photo-zone.drop{background:var(--accent-soft);outline:2px dashed var(--accent);outline-offset:-6px}
+.kaizen-photo-thumb{position:relative;width:76px;height:76px;border-radius:8px;overflow:hidden;border:1px solid var(--line);cursor:zoom-in}
+.kaizen-photo-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s}.kaizen-photo-thumb:hover img{transform:scale(1.07)}
+.kaizen-photo-label{font-size:12px;color:var(--muted);text-align:center;cursor:pointer;width:76px;height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1.5px dashed var(--line);border-radius:8px;transition:.15s}
+.kaizen-photo-label:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.kaizen-photo-label.label-empty{width:100%;height:84px;flex-direction:row;gap:8px}.kaizen-photo-label span{font:600 22px/1 var(--display);color:var(--accent)}
+.kaizen-photo-input{display:none}
+.kaizen-photo-remove{position:absolute;top:3px;right:3px;background:rgba(10,20,30,.78);color:#fff;border:0;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;line-height:1;opacity:0;transition:opacity .15s}
+.kaizen-photo-thumb:hover .kaizen-photo-remove,.kaizen-photo-remove:focus-visible{opacity:1}@media(hover:none){.kaizen-photo-remove{opacity:1}}
+.kaizen-text{width:100%;border:0;min-height:84px;padding:12px 14px;font-size:13.5px;line-height:1.45;resize:vertical;background:transparent}.kaizen-text:focus{outline:2px solid var(--accent);outline-offset:-2px}
+.nors-lightbox{position:fixed;inset:0;background:rgba(6,12,18,.9);display:flex;align-items:center;justify-content:center;z-index:3000;padding:32px;cursor:zoom-out;animation:fade .2s}
+@keyframes fade{from{opacity:0}}.nors-lightbox img{max-width:100%;max-height:100%;border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.nors-lightbox-close{position:absolute;top:18px;right:24px;background:rgba(255,255,255,.14);color:#fff;border:0;border-radius:50%;width:38px;height:38px;font-size:16px;cursor:pointer}
+.acidentes-wrap{padding:20px 28px 40px}
+details.help{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:16px}details.help summary{cursor:pointer;padding:12px 16px;font-weight:600;font-size:14px}
+details.help p{margin:0;padding:0 16px 14px;color:var(--muted);font-size:13.5px;line-height:1.55}
+.acidentes-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.acidentes-controls .field-group{display:flex;align-items:center;gap:8px;flex:1;min-width:280px}.acidentes-controls label.text-label{font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap}
+.acidentes-controls input[type="url"]{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13.5px;background:var(--panel2)}
+.acidentes-upload-label{font-size:13px;font-weight:600;border:1px solid var(--line);background:var(--panel);padding:8px 14px;border-radius:8px;cursor:pointer}.acidentes-upload-label:hover{border-color:var(--accent);color:var(--accent)}
+.acidentes-or{font-size:12.5px;color:var(--muted)}.acidentes-meta{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);margin-bottom:8px}
+.acidentes-display{background:var(--panel);border:1px solid var(--line);border-radius:12px;min-height:420px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:var(--shadow)}
+.acidentes-display iframe{width:100%;height:calc(100vh - 220px);min-height:560px;border:0;display:block}.acidentes-display img{width:100%;max-height:760px;object-fit:contain;cursor:zoom-in}.acidentes-display embed{width:100%;height:760px}
+.acidentes-empty{color:var(--muted);font-size:14px;text-align:center;padding:60px 20px}
+.diario-legend{display:none}
+.diario-tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:18px 28px 0}
+.dt-search{flex:1;min-width:200px;max-width:300px;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 12px;font-size:13.5px}
+.dt-chips{display:flex;flex-wrap:wrap;gap:6px}
+.dt-chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);font:600 12.5px var(--body);padding:6px 12px;border-radius:99px;cursor:pointer;transition:.15s}
+.dt-chip i{width:9px;height:9px;border-radius:50%;background:var(--c)}.dt-chip b{font-weight:600;color:var(--muted)}.dt-chip:hover{border-color:var(--muted)}.dt-chip.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.dt-count{margin-left:auto;font-size:12.5px;color:var(--muted)}
+.diario-wrap{padding:14px 28px 40px}.diario-panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+table.diario-table{border-collapse:collapse;width:100%;min-width:1180px;font-size:13.5px;background:var(--panel)}
+table.diario-table th,table.diario-table td{border:1px solid var(--line);padding:0;vertical-align:top}
+table.diario-table thead th{background:var(--panel2);font:600 12.5px var(--body);padding:11px 8px;text-align:center}
+table.diario-table td.diario-num{text-align:center;font-weight:600;color:var(--muted);padding:10px 4px;background:var(--panel2)}
+.diario-table input[type="text"],.diario-table input[type="date"],.diario-table textarea,.diario-table select{width:100%;border:0;background:transparent;font-size:13.5px;padding:9px 10px}
+.diario-table textarea{min-height:64px;resize:vertical;line-height:1.4}
+.diario-table input:focus,.diario-table select:focus,.diario-table textarea:focus{outline:2px solid var(--accent);outline-offset:-2px;background:var(--panel)}
+table.diario-table tbody tr:hover td{background:var(--hl)}
+.diario-table select.diario-status-select{font-weight:600;color:#fff!important;cursor:pointer;width:calc(100% - 12px);margin:6px;padding:7px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.25)}.diario-status-select option{color:var(--ink);background:var(--panel)}
+table.diario-table td.diario-kaizen-cell{padding:2px}.diario-kaizen-cell input{border-top:1px solid var(--line)!important;font-size:12px!important;color:var(--muted)}
+table.diario-table td.diario-row-actions{text-align:center;padding:6px;background:var(--panel2)}
+.diario-del-btn{border:0;background:none;color:var(--muted);cursor:pointer;font-size:14px;padding:6px 8px;border-radius:6px}.diario-del-btn:hover{background:var(--danger-soft);color:var(--danger)}
+table.diario-table tr.diario-empty-row td{text-align:center;padding:36px 12px;color:var(--muted)}
+table.diario-table tr.overdue td.diario-num{box-shadow:inset 4px 0 0 var(--danger);color:var(--danger)}.diario-table tr.overdue input[data-field=prazo]{color:var(--danger);font-weight:600}
+.c2-ver{display:none}.c2-chips{display:flex;flex-wrap:wrap;gap:8px;padding:18px 28px 0}
+.c2-chip{border:1px solid var(--line);background:var(--panel);font:600 13px var(--body);padding:8px 16px;border-radius:99px;cursor:pointer;transition:.15s}.c2-chip:hover{border-color:var(--accent);color:var(--accent)}.c2-chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.c2-wrap{padding:26px 28px 4px}.c2-sec{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:4px 16px;margin:0 0 12px}
+.c2-sec h2{font:700 23px var(--display);margin:0}.c2-sec p{color:var(--muted);font-size:13px;margin:0}
+.c2-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.c2-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.c2-card::before{content:'';position:absolute;left:0;right:0;top:0;height:4px;background:var(--slate)}.c2-card.ok::before{background:var(--ok)}.c2-card.bad::before{background:var(--danger)}.c2-card.teal::before{background:var(--teal)}
+.c2-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.c2-label{font-size:13px;font-weight:600;color:var(--muted)}
+.c2-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:var(--slate-soft);color:var(--muted);white-space:nowrap}.c2-badge.ok{background:var(--ok-soft);color:var(--ok)}.c2-badge.bad{background:var(--danger-soft);color:var(--danger)}
+.c2-num{font:700 40px/1 var(--display)}.c2-card.ok .c2-num{color:var(--ok)}.c2-card.bad .c2-num{color:var(--danger)}.c2-num small{font:500 14px var(--body);color:var(--muted);margin-left:5px}
+.c2-gauge{position:relative;height:8px;background:var(--track);border-radius:4px;margin:14px 0 8px}
+.c2-gauge i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--slate)}.c2-card.ok .c2-gauge i{background:var(--ok)}.c2-card.bad .c2-gauge i{background:var(--danger)}
+.c2-gauge b{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}.c2-note{font-size:12px;color:var(--muted)}.c2-ring{display:flex;align-items:center;gap:16px}
+.c2-gauge i,.c2-fill{transform-origin:left;animation:grow .7s cubic-bezier(.2,.7,.2,1)}@keyframes grow{from{transform:scaleX(0)}}
+.c2-grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:14px}
+.c2-panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:var(--shadow)}.c2-panel h3{font:700 18px var(--display);margin:0 0 2px}.c2-sub{font-size:12.5px;color:var(--muted);margin:0 0 14px}
+.c2-row{display:grid;grid-template-columns:110px 1fr 74px;align-items:center;gap:10px;padding:6px;border-radius:6px;cursor:pointer;transition:background .12s}.c2-row.k{grid-template-columns:110px 1fr 130px}
+.c2-row:hover{background:var(--hl)}.c2-row.sel{background:var(--accent-soft)}.c2-row.tot{cursor:default;border-top:1px dashed var(--line);margin-top:6px;font-weight:700}.c2-row.tot:hover{background:none}
+.c2-name{font-size:13.5px;font-weight:600}.c2-track{position:relative;height:16px;background:var(--track);border-radius:4px}.c2-fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--slate)}
+.c2-fill.ok{background:var(--ok)}.c2-fill.bad{background:var(--danger)}.c2-fill.teal{background:var(--teal)}.c2-meta{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}.c2-val{font-size:13px;text-align:right;font-weight:500}
+.c2-tip{position:fixed;z-index:9999;pointer-events:none;background:var(--deep);color:#fff;font-size:12.5px;line-height:1.4;padding:8px 11px;border-radius:7px;opacity:0;transition:opacity .1s;max-width:270px}.c2-tip.on{opacity:1}
+#consBranchTableWrap{border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+table.cons-branch-table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--panel)}
+table.cons-branch-table th,table.cons-branch-table td{border-bottom:1px solid var(--line);padding:12px 14px;text-align:center;white-space:nowrap}
+table.cons-branch-table thead th{background:var(--slate-2);color:#fff;font-weight:600;font-size:12.5px}table.cons-branch-table th.sortable{cursor:pointer;user-select:none}table.cons-branch-table th.sortable:hover{background:var(--slate)}
+table.cons-branch-table td.cbt-label{text-align:left;font-weight:700;background:var(--panel2)}table.cons-branch-table tbody tr:hover td:not(.pm-ok):not(.pm-bad){background:var(--hl)}
+table.cons-branch-table tr.sel td.cbt-label{box-shadow:inset 4px 0 0 var(--accent)}table.cons-branch-table tfoot td{font-weight:700;background:var(--highlight);border-bottom:0}
+.c2-pctbar{display:inline-block;width:56px;height:6px;background:var(--track);border-radius:3px;vertical-align:middle;margin-left:8px;overflow:hidden}.c2-pctbar i{display:block;height:100%;background:var(--teal)}
+.cons-loading{padding:24px;color:var(--muted);font-size:14px}
+#toasts{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:4000;pointer-events:none;align-items:center}
+.toast{background:var(--deep);color:#fff;font-size:13.5px;font-weight:500;padding:10px 18px;border-radius:99px;box-shadow:0 8px 24px rgba(0,0,0,.3);display:flex;gap:8px;align-items:center;animation:rise .25s}
+.toast::before{content:'✓';color:#5bd48c;font-weight:700}.toast.bad::before{content:'!';color:#ff8086}.toast.out{opacity:0;transition:opacity .3s}
+.theme-btn{position:fixed;right:18px;bottom:18px;z-index:1500;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--panel);cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow)}
+.theme-btn svg{width:19px;height:19px}.theme-btn .moon{display:none}:root[data-theme=dark] .theme-btn .sun{display:none}:root[data-theme=dark] .theme-btn .moon{display:block}
+@media(max-width:700px){.nors-header,.page-nav,.c2-chips,.c2-wrap,.comments-wrap,.kaizen-wrap,.acidentes-wrap,.diario-tools,.diario-wrap{padding-left:16px;padding-right:16px}
+.nors-tabs{margin-left:16px;margin-right:16px;max-width:calc(100% - 32px)}.nors-panel{margin:0 16px}.nors-title h1{font-size:28px}.home-page{padding:40px 20px 48px}.dt-count{margin-left:0}.c2-row,.c2-row.k{grid-template-columns:84px 1fr 76px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="nors-app">
+  <div id="toasts" aria-live="polite"></div>
+  <button class="theme-btn" id="themeBtn" type="button" aria-label="Alternar tema claro/escuro" title="Alternar tema"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+
+  <div class="page-nav" id="pageNav">
+    <span class="nav-brand">Nors CO <i>2.0</i></span>
+    <button class="page-nav-btn" data-page="home">Início</button>
+    <button class="page-nav-btn" data-page="vps">Reporte VPS</button>
+    <button class="page-nav-btn" data-page="consolidado">Consolidado</button>
+    <button class="page-nav-btn" data-page="kaizen">Kaizens Destaque</button>
+    <button class="page-nav-btn" data-page="acidentes">DashBoards</button>
+    <button class="page-nav-btn" data-page="diario">Diário de Bordo</button>
+  </div>
+
+  <div id="page-home" class="home-page">
+    <div class="home-inner">
+      <span class="home-chip" id="homeWeek"></span>
+      <h1 class="home-title">Reporte VPS<br>Nors CO</h1>
+      <p class="home-lead">Indicadores semanais de segurança, agendamentos, porta a porta e kaizens das cinco filiais.</p>
+      <div class="home-actions"><button class="home-cta" id="btnStartVps">Iniciar Reporte VPS</button><button class="home-sec" data-go="consolidado">Ver consolidado</button></div>
+      <div class="home-tiles">
+        <button data-go="vps">Reporte VPS<small>Lançamento semanal por filial</small></button>
+        <button data-go="consolidado">Consolidado<small>Status geral das filiais</small></button>
+        <button data-go="kaizen">Kaizens Destaque<small>Fotos e destaques da semana</small></button>
+        <button data-go="acidentes">DashBoards<small>Painel de acidentes</small></button>
+        <button data-go="diario">Diário de Bordo<small>Problemas, desvios e ações</small></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-vps" style="display:none">
+    <div class="nors-header">
+      <div class="nors-title">
+        <h1>Reporte VPS <span>Nors CO</span></h1>
+        <p id="vpsSubtitle">Controle operacional Pit Stop / Oficina</p>
+      </div>
+      <div class="nors-controls">
+        <button class="week-chip" id="weekChip" type="button" title="Ir para a semana atual"></button>
+        <span id="savePill" class="save-pill">salvo</span>
+        <select class="branch-select" id="branchSelect" title="Filial"></select>
+        <div class="year-stepper">
+          <button id="yrDown" title="Ano anterior">‹</button>
+          <span class="yr" id="yrLabel">2026</span>
+          <button id="yrUp" title="Próximo ano">›</button>
+        </div>
+        <button class="btn-ghost" id="btnExport">Exportar backup</button>
+        <button class="btn-ghost" id="btnImport">Importar backup</button>
+        <input type="file" id="fileImport" accept="application/json" style="display:none">
+      </div>
+    </div>
+
+    <div class="nors-tabs" id="tabs"></div>
+    <div class="nors-panel">
+      <div class="table-scroll" id="tableWrap"></div>
+    </div>
+
+    <div class="comments-wrap">
+      <h2>Comentários</h2>
+      <p>Um campo de observação por semana (W), para cada indicador do trimestre selecionado acima.</p>
+      <div id="commentsWrap"></div>
+    </div>
+  </div>
+
+  <div id="page-consolidado" style="display:none">
+    <div class="nors-header">
+      <div class="nors-title">
+        <h1>Consolidado <span>Nors CO</span><em class="c2-ver">v2.0</em></h1>
+        <p>Status geral de todas as filiais · Ano <strong id="consYrLabel">2026</strong></p>
+      </div>
+      <div class="nors-controls">
+        <span id="consLoadPill" class="save-pill">salvo</span>
+        <button class="btn-ghost" id="btnConsExport">Exportar CSV</button>
+        <button class="btn-ghost" id="btnConsRefresh">Atualizar</button>
+      </div>
+    </div>
+    <div class="c2-chips" id="consFilter"></div>
+    <div class="c2-wrap">
+      <div class="c2-sec"><h2>Indicadores-chave</h2><p id="consScope"></p></div>
+      <div class="c2-cards" id="consCards"></div>
+    </div>
+    <div class="c2-wrap">
+      <div class="c2-sec"><h2>PAP Agendado por filial</h2><p>Linha preta = meta · clique em uma filial para filtrar a página</p></div>
+      <div class="c2-grid2" id="consCharts"></div>
+    </div>
+    <div class="c2-wrap">
+      <div class="c2-sec"><h2>Kaizens · implementados sobre criados</h2><p>% implementado = implementados ÷ elaborados</p></div>
+      <div class="c2-grid2" id="consKaizen"></div>
+    </div>
+    <div class="c2-wrap">
+      <div class="c2-sec"><h2>Status geral das casas</h2><p>Clique no título da coluna para ordenar</p></div>
+      <div class="table-scroll" id="consBranchTableWrap"></div>
+    </div>
+    <div class="c2-wrap" style="padding-bottom:4px">
+      <div class="c2-sec"><h2>Semanal consolidado</h2><p id="consWeekNote"></p></div>
+    </div>
+    <div class="nors-tabs" id="consTabs"></div>
+    <div class="nors-panel"><div class="table-scroll" id="consTableWrap"></div></div>
+    <div class="c2-tip" id="c2tip"></div>
+  </div>
+
+  <div id="page-kaizen" style="display:none">
+    <div class="nors-header">
+      <div class="nors-title">
+        <h1>Kaizens <span>Destaque</span></h1>
+        <p>Foto(s) e observação por semana</p>
+      </div>
+      <div class="nors-controls">
+        <span class="kaizen-year-note">Ano <strong id="kYrLabel">2026</strong> · altere o ano na aba Reporte VPS</span>
+      </div>
+    </div>
+    <div class="nors-tabs" id="kaizenTabs"></div>
+    <div class="kaizen-wrap">
+      <p>Um ou mais destaques por semana (W). Clique numa foto para ampliar; use "+" para adicionar mais fotos.</p>
+      <div id="kaizenWrap"></div>
+    </div>
+  </div>
+
+  <div id="page-acidentes" style="display:none">
+    <div class="nors-header">
+      <div class="nors-title">
+        <h1>Painel de <span>Acidentes</span></h1>
+        <p>Dashboard BI de acidentes</p>
+      </div>
+    </div>
+    <div class="acidentes-wrap">
+      <details class="help"><summary>Como conectar o dashboard do Power BI</summary><p>Cole o link de publicação web do seu relatório Power BI (não o arquivo .pbix — ele não pode ser exibido no navegador). No Power BI Desktop: <strong>Arquivo → Publicar → Publicar na Web</strong>, ou no serviço Power BI: <strong>Arquivo → Inserir relatório → Publicar na web</strong>, e copie o link gerado (formato <span style="font-family:var(--mono)">https://app.powerbi.com/view?r=...</span>). Alternativamente, envie uma imagem/PDF exportado do dashboard.</p></details>
+      <div class="acidentes-controls">
+        <div class="field-group">
+          <label class="text-label">Link do dashboard</label>
+          <input type="url" id="acidentesLinkInput" placeholder="https://app.powerbi.com/view?r=...">
+          <button class="btn-ghost" id="acidentesLinkSave">Salvar link</button>
+        </div>
+        <span class="acidentes-or">ou</span>
+        <label class="acidentes-upload-label">Anexar arquivo (imagem ou PDF)
+          <input type="file" id="acidentesFileInput" accept="image/*,application/pdf" style="display:none">
+        </label>
+        <button class="btn-ghost" id="acidentesRemove">Remover dashboard</button>
+      </div>
+      <div class="acidentes-meta" id="acidentesMeta" style="display:none"></div>
+      <div class="acidentes-display" id="acidentesDisplay">
+        <span class="acidentes-empty">Nenhum dashboard anexado ainda. Cole um link ou anexe um arquivo acima.</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-diario" style="display:none">
+    <div class="nors-header">
+      <div class="nors-title">
+        <h1>Diário de <span>Bordo</span></h1>
+        <p id="diarioSubtitle">Registro de problemas, desvios e oportunidades</p>
+      </div>
+      <div class="nors-controls">
+        <span id="diarioSavePill" class="save-pill">salvo</span>
+      </div>
+    </div>
+    <div class="diario-legend" id="diarioLegend"></div>
+    <div class="diario-tools">
+      <button class="btn-ghost" id="diarioAddRow">+ Adicionar linha</button>
+      <input class="dt-search" id="diarioQ" type="search" placeholder="Buscar nos registros" aria-label="Buscar nos registros">
+      <div class="dt-chips" id="diarioChips"></div>
+      <span class="dt-count" id="diarioCount"></span>
+    </div>
+    <div class="diario-wrap">
+      <div class="diario-panel">
+        <div class="table-scroll">
+          <table class="diario-table">
+            <thead>
+              <tr>
+                <th style="width:38px">Nº</th>
+                <th style="width:110px">Data registro</th>
+                <th style="width:130px">Setor</th>
+                <th style="min-width:220px">Descrição de Problemas / Desvios / Oportunidades</th>
+                <th style="min-width:220px">Ação</th>
+                <th style="width:130px">Kaizen (Sim/Não)<br><span style="text-transform:none;font-weight:400;font-size:9.5px;color:var(--muted)">Em caso de SIM, colocar o Código</span></th>
+                <th style="width:120px">Resp.</th>
+                <th style="width:170px">Status</th>
+                <th style="width:120px">Prazo Conclusão Ação</th>
+                <th style="width:34px"></th>
+              </tr>
+            </thead>
+            <tbody id="diarioBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SDK do Firebase (versao "compat", funciona direto via tag de script, sem precisar de build) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.16.0/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.16.0/firebase-firestore-compat.min.js"></script>
+
+<script>
+// ---------- Camada de armazenamento (Firebase Firestore) ----------
+// Substitui a API window.storage (exclusiva dos Artifacts do Claude.ai) por uma
+// versão equivalente que salva no Cloud Firestore, para que TODAS as pessoas que
+// abrirem este painel (em qualquer computador/dispositivo) leiam e gravem os
+// mesmos dados, em tempo real.
+(function(){
+  if(typeof firebase === 'undefined'){
+    console.error('SDK do Firebase não carregou. Verifique sua conexão com a internet ou se o domínio cdnjs.cloudflare.com está bloqueado.');
+    window.storage = {
+      async get(){ return null; },
+      async set(){ alert('Não foi possível conectar ao banco de dados (SDK do Firebase não carregou). Verifique sua conexão e recarregue a página.'); return null; },
+      async delete(){ return null; },
+      async list(){ return null; }
+    };
+    return;
+  }
+  const firebaseConfig = {
+    apiKey: "AIzaSyBWTR2Cm4JX7LJNnrIkQBxQlSSb2qZSvos",
+    authDomain: "qualidadenors-eed75.firebaseapp.com",
+    projectId: "qualidadenors-eed75",
+    storageBucket: "qualidadenors-eed75.firebasestorage.app",
+    messagingSenderId: "903332464109",
+    appId: "1:903332464109:web:a9f89db2090bddcf9013e4"
+  };
+
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore(app);
+  const COLLECTION = 'nors_storage';
+
+  // Firestore não permite "/" no ID do documento; trocamos por um separador seguro.
+  function docId(key){ return String(key).replace(/\//g, '__slash__'); }
+
+  window.storage = {
+    async get(key){
+      try{
+        const snap = await db.collection(COLLECTION).doc(docId(key)).get();
+        if(!snap.exists) return null;
+        const data = snap.data();
+        return { key, value: data.value, shared: true };
+      }catch(e){
+        console.error('storage.get falhou', e);
+        return null;
+      }
+    },
+    async set(key, value){
+      try{
+        await db.collection(COLLECTION).doc(docId(key)).set({
+          value: value,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return { key, value, shared: true };
+      }catch(e){
+        console.error('storage.set falhou', e);
+        return null;
+      }
+    },
+    async delete(key){
+      try{
+        await db.collection(COLLECTION).doc(docId(key)).delete();
+        return { key, deleted: true, shared: true };
+      }catch(e){
+        console.error('storage.delete falhou', e);
+        return null;
+      }
+    },
+    async list(prefix){
+      try{
+        let query = db.collection(COLLECTION);
+        if(prefix){
+          query = query
+            .orderBy(firebase.firestore.FieldPath.documentId())
+            .startAt(docId(prefix))
+            .endAt(docId(prefix) + '\uf8ff');
+        }
+        const snap = await query.get();
+        const keys = snap.docs.map(d => d.id.replace(/__slash__/g, '/'));
+        return { keys, prefix, shared: true };
+      }catch(e){
+        console.error('storage.list falhou', e);
+        return null;
+      }
+    }
+  };
+})();
+
+(function(){
+  const MONTH_NAMES = ['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
+  const MONTH_SHORT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const QUARTERS = [
+    {label:'T1 · Jan–Mar', months:[0,1,2]},
+    {label:'T2 · Abr–Jun', months:[3,4,5]},
+    {label:'T3 · Jul–Set', months:[6,7,8]},
+    {label:'T4 · Out–Dez', months:[9,10,11]},
+  ];
+  const GROUPS = {
+    seguranca:{label:'Segurança', color:'#7a2b2f'},
+    agendamentos:{label:'Agendamentos & Passagens', color:'#494c52'},
+    portaporta:{label:'Porta a Porta', color:'#28584c'},
+    kaizen:{label:'Kaizen', color:'#3a3d43'},
+  };
+  const METRICS = [
+    {id:'acid_afast', label:'Qtde acidentes com afastamento', group:'seguranca', fech:'sum'},
+    {id:'acid_sem', label:'Qtde acidentes sem afastamento', group:'seguranca', fech:'sum'},
+    {id:'dias_afast', label:'Dias de afastamento (em caso de acidente)', group:'seguranca', fech:'sum'},
+    {id:'obj_agend', label:'Objetivo de agendados (PIT STOP + OF)', group:'agendamentos', fech:'sum'},
+    {id:'qtd_agend', label:'Qtde de agendados (PIT STOP + OF)', group:'agendamentos', fech:'sum'},
+    {id:'agend_comp', label:'Qtde agendados comparecidos (PIT STOP+OFICINA)', group:'agendamentos', fech:'sum'},
+    {id:'passagens', label:'Qtde passagens (PIT STOP + OF)', group:'agendamentos', fech:'sum'},
+    {id:'pp_agend_ps', label:'Porta a Porta agendados (PIT STOP) — min', group:'portaporta', fech:'avg', pmMeta:60, pmDir:'below', pmScope:'both'},
+    {id:'pp_nagend_ps', label:'Porta a Porta não agendados / passante (PIT STOP) — min', group:'portaporta', fech:'avg', pmMeta:60, pmDir:'below', pmScope:'both'},
+    {id:'pp_agend_of', label:'Porta a Porta agendados (OFICINA) — min', group:'portaporta', fech:'avg', pmMeta:150, pmDir:'below', pmScope:'both'},
+    {id:'pp_nagend_of', label:'Porta a Porta não agendados / passante (OFICINA) — min', group:'portaporta', fech:'avg', pmMeta:150, pmDir:'below', pmScope:'both'},
+    {id:'kaizen_elab', label:'Quant. Kaizens elaborados', group:'kaizen', fech:'sum'},
+    {id:'kaizen_impl', label:'Quant. Kaizens implementados', group:'kaizen', fech:'sum', pmMeta:10, pmDir:'above', pmScope:'fech'},
+  ];
+
+  const BRANCHES = [
+    {id:'cuiaba', label:'Cuiabá'},
+    {id:'sinop', label:'Sinop'},
+    {id:'portovelho', label:'Porto Velho'},
+    {id:'vilhena', label:'Vilhena'},
+    {id:'rondonopolis', label:'Rondonópolis'},
+  ];
+
+  const DIARIO_STATUS = [
+    {id:'sem_definicao', label:'Sem definição', color:'#9099a3'},
+    {id:'planejada', label:'Ação planejada', color:'#c9a227'},
+    {id:'executada', label:'Ação Executada', color:'#2b6cb0'},
+    {id:'resultados', label:'Resultados', color:'#1f6b56'},
+    {id:'fechado', label:'Fechado/Padronizado', color:'#15171a'},
+  ];
+
+  let state = { page:'home', year:2026, branch:BRANCHES[0].id, qIdx:0, kQIdx:0, data:null, kaizenPhotos:{}, acidentes:undefined, diario:null, diarioSaveTimer:null, saveTimer:null };
+
+  function blankData(year){
+    const values={}, fechMes={}, comments={}, kaizenNotes={};
+    METRICS.forEach(m=>{values[m.id]={}; fechMes[m.id]={}; comments[m.id]={};});
+    return {year, values, fechMes, comments, kaizenNotes, weekDates:{}, monthClose:{}};
+  }
+
+  function pad(n){return n<10 ? '0'+n : ''+n;}
+  // Porto Velho mantém a chave antiga (dados já existentes); demais filiais usam chave nova por filial.
+  function storageKey(year, branch){
+    return branch==='portovelho' ? 'nors-porto-velho:'+year : 'nors-'+branch+':'+year;
+  }
+  // Fotos dos Kaizens Destaque separadas por filial.
+  // Porto Velho mantém a chave antiga (fotos já existentes); demais filiais usam chave própria.
+  function photoKey(year, gw, branch){
+    const b = branch || state.branch;
+    return b==='portovelho'
+      ? 'nors-porto-velho-kaizen-foto:'+year+':'+gw
+      : 'nors-'+b+'-kaizen-foto:'+year+':'+gw;
+  }
+  function branchLabel(id){ const b = BRANCHES.find(x=>x.id===id); return b ? b.label : id; }
+  function pmClass(v, meta, dir){
+    if(v===null || v===undefined || v==='' || isNaN(v)) return '';
+    if(!meta && meta!==0) return '';
+    const n = Number(v);
+    if(dir === 'above') return n >= meta ? 'pm-ok' : 'pm-bad';
+    return n <= meta ? 'pm-ok' : 'pm-bad'; // dir 'below' (padrão): até a meta = verde, acima = vermelho
+  }
+
+  function buildBranchSelect(){
+    const sel = document.getElementById('branchSelect');
+    if(!sel) return;
+    sel.innerHTML = BRANCHES.map(b=>`<option value="${b.id}">${b.label}</option>`).join('');
+    sel.value = state.branch;
+  }
+
+  async function loadData(year, branch){
+    setSavePill('carregando…', true);
+    let loaded = null;
+    try{
+      const res = await window.storage.get(storageKey(year, branch), false);
+      if(res && res.value) loaded = JSON.parse(res.value);
+    }catch(e){ /* not found or error -> blank */ }
+    state.data = loaded ? Object.assign(blankData(year), loaded) : blankData(year);
+    state.year = year;
+    state.branch = branch;
+    state.kaizenPhotos = {};
+    document.getElementById('yrLabel').textContent = year;
+    document.getElementById('kYrLabel').textContent = year;
+    const sel = document.getElementById('branchSelect');
+    if(sel) sel.value = branch;
+    const subtitle = document.getElementById('vpsSubtitle');
+    if(subtitle) subtitle.textContent = 'Controle operacional Pit Stop / Oficina · Filial: ' + branchLabel(branch);
+    setSavePill('salvo', false);
+    render();
+    if(state.page === 'kaizen') renderKaizenPage();
+    if(state.page === 'diario') renderDiarioPage();
+  }
+  // Mantido por compatibilidade (recarrega ano na filial atual)
+  function loadYear(year){ return loadData(year, state.branch); }
+
+  function setSavePill(text, active){
+    const p = document.getElementById('savePill');
+    p.textContent = text;
+    p.classList.toggle('saving', !!active);
+  }
+
+  function debounceSave(){
+    setSavePill('salvando…', true);
+    clearTimeout(state.saveTimer);
+    state.saveTimer = setTimeout(async ()=>{
+      try{
+        await window.storage.set(storageKey(state.year, state.branch), JSON.stringify(state.data), false);
+        setSavePill('salvo', false);
+      }catch(e){
+        setSavePill('não salvo (offline)', true);
+      }
+    }, 500);
+  }
+
+  // Semana operacional: sexta-feira a quinta-feira. A W01 começa na 1ª sexta-feira
+  // do ano (em 2026, 02/01). As semanas seguem em blocos fixos de 7 dias a partir daí.
+  function firstFridayOfYear(year){
+    const jan1 = new Date(Date.UTC(year,0,1));
+    const day = jan1.getUTCDay(); // 0=Dom..6=Sáb
+    const offset = (5 - day + 7) % 7; // dias até a sexta-feira
+    jan1.setUTCDate(jan1.getUTCDate() + offset);
+    return jan1;
+  }
+  function fmtDM(d){ return pad(d.getUTCDate())+'/'+pad(d.getUTCMonth()+1); }
+  function weekRangeLabel(year, gw){
+    const start = new Date(firstFridayOfYear(year));
+    start.setUTCDate(start.getUTCDate() + (gw-1)*7);
+    const end = new Date(start);
+    end.setUTCDate(end.getUTCDate() + 6);
+    return fmtDM(start)+'–'+fmtDM(end);
+  }
+
+  // Cada semana (sex–qui) pertence ao mês em que cai sua quinta-feira final.
+  // O ano sempre fecha em exatamente 52 semanas (02/01 a 31/12 em 2026), com
+  // meses de 4 ou 5 semanas dependendo de onde a quinta-feira final cai.
+  const monthWeeksCache = {};
+  function monthWeeksOfYear(year){
+    if(monthWeeksCache[year]) return monthWeeksCache[year];
+    const start0 = firstFridayOfYear(year);
+    const monthWeeks = Array.from({length:12}, ()=>[]);
+    for(let gw=1; gw<=52; gw++){
+      const end = new Date(start0);
+      end.setUTCDate(end.getUTCDate() + (gw-1)*7 + 6);
+      monthWeeks[end.getUTCMonth()].push(gw);
+    }
+    monthWeeksCache[year] = monthWeeks;
+    return monthWeeks;
+  }
+  function monthOfWeek(year, gw){
+    const weeks = monthWeeksOfYear(year);
+    for(let mi=0; mi<12; mi++){ if(weeks[mi].includes(gw)) return mi; }
+    return 0;
+  }
+
+  function computeFech(m, mi){
+    const weeks = monthWeeksOfYear(state.year)[mi];
+    const vals = [];
+    weeks.forEach(gw=>{
+      const v = state.data.values[m.id][gw];
+      if(v !== undefined && v !== null && v !== '') vals.push(Number(v));
+    });
+    if(vals.length === 0) return null;
+    const sum = vals.reduce((a,b)=>a+b, 0);
+    if(m.fech === 'avg') return sum / vals.length;
+    return sum;
+  }
+  function fmtFech(v){
+    if(v === null || v === undefined) return '';
+    return String(Math.round(v));
+  }
+
+  function buildTabs(){
+    const wrap = document.getElementById('tabs');
+    wrap.innerHTML = '';
+    QUARTERS.forEach((q,i)=>{
+      const b = document.createElement('button');
+      b.className = 'nors-tab' + (i===state.qIdx ? ' active' : '');
+      b.textContent = q.label;
+      b.addEventListener('click', ()=>{ state.qIdx = i; render(); });
+      wrap.appendChild(b);
+    });
+  }
+
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+  function buildTable(){
+    const q = QUARTERS[state.qIdx];
+    const monthWeeks = monthWeeksOfYear(state.year);
+    let html = '<table class="nors-table"><thead>';
+    // month name row
+    html += '<tr><th class="th-label"></th>';
+    q.months.forEach(mi=>{
+      const bg = mi%2===0 ? 'var(--slate)' : 'var(--slate-2)';
+      const colspan = monthWeeks[mi].length + 1; // semanas do mês + coluna FECH MÊS
+      html += `<th class="month-head" colspan="${colspan}" style="background:${bg}">${MONTH_NAMES[mi]}</th>`;
+    });
+    html += '</tr>';
+    // week / fech mes header row
+    html += '<tr><th class="th-label">Semana <span style="color:var(--muted);font-weight:400">(sex–qui, calculado)</span></th>';
+    q.months.forEach(mi=>{
+      monthWeeks[mi].forEach((gw, w)=>{
+        const dateLabel = esc(weekRangeLabel(state.year, gw));
+        const sep = w===0 ? ' month-sep' : '';
+        html += `<th class="week-head${sep}"><span class="wlabel">W${pad(gw)}</span><span class="wdate">${dateLabel}</span></th>`;
+      });
+      const closeVal = esc(state.data.monthClose[mi] || '');
+      html += `<th class="week-head fech-head"><span class="wlabel">FECH MÊS</span><input data-type="monthclose" data-mi="${mi}" placeholder="dd/mmm" value="${closeVal}"></th>`;
+    });
+    html += '</tr></thead><tbody>';
+
+    let lastGroup = null;
+    METRICS.forEach((m, idx)=>{
+      if(m.group !== lastGroup){
+        const g = GROUPS[m.group];
+        const span = q.months.reduce((acc,mi)=>acc + monthWeeks[mi].length + 1, 1);
+        html += `<tr class="group-row" style="background:${g.color}"><td colspan="${span}" style="background:${g.color}">${g.label}</td></tr>`;
+        lastGroup = m.group;
+      }
+      const g = GROUPS[m.group];
+      const hasPm = !!m.pmMeta || m.pmMeta===0;
+      const pmScope = m.pmScope || 'both';
+      let metaNote = '';
+      if(hasPm){
+        metaNote = pmScope === 'fech'
+          ? ` <span class="group-note">· meta no fechamento: ${m.pmDir==='above' ? m.pmMeta+' ou mais = verde' : 'até '+m.pmMeta+' = verde'}</span>`
+          : ` <span class="group-note">· meta: ${m.pmDir==='above' ? m.pmMeta+' ou mais = verde' : 'até '+m.pmMeta+' min = verde'}</span>`;
+      }
+      html += `<tr class="metric-row" style="--grp-color:${g.color}"><td class="td-label">${esc(m.label)}${metaNote}</td>`;
+      q.months.forEach(mi=>{
+        const weeks = monthWeeks[mi];
+        weeks.forEach((gw, w)=>{
+          const v = state.data.values[m.id][gw];
+          const sep = w===0 ? ' month-sep' : '';
+          const pmCls = (hasPm && pmScope !== 'fech') ? pmClass(v, m.pmMeta, m.pmDir) : '';
+          const cls = [sep.trim(), pmCls].filter(Boolean).join(' ');
+          html += `<td class="${cls}"><input class="cell-num" type="number" step="1" inputmode="numeric" data-type="value" data-metric="${m.id}" data-gw="${gw}" value="${v!==undefined && v!==null ? Math.round(v) : ''}"></td>`;
+        });
+        const fv = computeFech(m, mi);
+        const tag = m.fech === 'avg' ? 'méd' : 'soma';
+        const fechPmCls = hasPm ? ' ' + pmClass(fv, m.pmMeta, m.pmDir) : '';
+        const wFirst = pad(weeks[0]), wLast = pad(weeks[weeks.length-1]);
+        html += `<td class="fech-cell${fechPmCls}" data-fech-metric="${m.id}" data-fech-mi="${mi}" title="${tag} das W${wFirst}–W${wLast}"><span class="fech-readonly">${fmtFech(fv)}</span></td>`;
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    document.getElementById('tableWrap').innerHTML = html;
+  }
+
+  // Apenas estas métricas têm campo de comentário: Porta a Porta e acidentes (com/sem afastamento).
+  const COMMENT_METRIC_IDS = ['acid_afast','acid_sem','pp_agend_ps','pp_nagend_ps','pp_agend_of','pp_nagend_of'];
+
+  function buildComments(){
+    const weeks = kaizenWeeksOfQuarter(state.qIdx);
+    let html = '';
+    METRICS.filter(m=>COMMENT_METRIC_IDS.includes(m.id)).forEach(m=>{
+      html += `<details class="comment-card"><summary>${esc(m.label)}</summary><div class="comment-grid">`;
+      weeks.forEach(gw=>{
+        const val = esc(state.data.comments[m.id][gw] || '');
+        const dateLabel = esc(weekRangeLabel(state.year, gw));
+        html += `<div><label>W${pad(gw)}<span class="wdate-inline">${dateLabel}</span></label><textarea data-type="comment" data-metric="${m.id}" data-gw="${gw}" placeholder="Observação da W${pad(gw)}...">${val}</textarea></div>`;
+      });
+      html += '</div></details>';
+    });
+    document.getElementById('commentsWrap').innerHTML = html;
+  }
+
+  function render(){
+    buildTabs();
+    buildTable();
+    buildComments();
+  }
+
+  document.addEventListener('input', function(e){
+    const t = e.target;
+    const type = t.dataset.type;
+    if(!type) return;
+    if(type==='value'){
+      const val = t.value === '' ? null : Math.round(Number(t.value));
+      const metricId = t.dataset.metric;
+      const gw = Number(t.dataset.gw);
+      state.data.values[metricId][gw] = val;
+      // Atualiza só a célula FECH MÊS do mês afetado (soma ou média), sem redesenhar a tabela
+      const mi = monthOfWeek(state.year, gw);
+      const m = METRICS.find(x=>x.id===metricId);
+      const newFech = computeFech(m, mi);
+      const fechTd = document.querySelector(`[data-fech-metric="${metricId}"][data-fech-mi="${mi}"]`);
+      const cell = fechTd ? fechTd.querySelector('.fech-readonly') : null;
+      if(cell) cell.textContent = fmtFech(newFech);
+      if(m.pmMeta || m.pmMeta===0){
+        const pmScope = m.pmScope || 'both';
+        if(pmScope !== 'fech'){
+          const td = t.closest('td');
+          if(td){
+            td.classList.remove('pm-ok','pm-bad');
+            const cls = pmClass(val, m.pmMeta, m.pmDir);
+            if(cls) td.classList.add(cls);
+          }
+        }
+        if(fechTd){
+          fechTd.classList.remove('pm-ok','pm-bad');
+          const fcls = pmClass(newFech, m.pmMeta, m.pmDir);
+          if(fcls) fechTd.classList.add(fcls);
+        }
+      }
+      debounceSave();
+      return;
+    }else if(type==='monthclose'){
+      state.data.monthClose[t.dataset.mi] = t.value;
+    }else if(type==='comment'){
+      state.data.comments[t.dataset.metric][t.dataset.gw] = t.value;
+    }else if(type==='kaizen-note'){
+      state.data.kaizenNotes[t.dataset.gw] = t.value;
+    }
+    debounceSave();
+  });
+
+  buildBranchSelect();
+  document.getElementById('branchSelect').addEventListener('change', function(e){
+    loadData(state.year, e.target.value);
+  });
+
+  document.getElementById('yrUp').addEventListener('click', ()=> loadData(state.year+1, state.branch));
+  document.getElementById('yrDown').addEventListener('click', ()=> loadData(state.year-1, state.branch));
+
+  document.getElementById('btnExport').addEventListener('click', ()=>{
+    const blob = new Blob([JSON.stringify(state.data, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'nors-' + state.branch + '-' + state.year + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('btnImport').addEventListener('click', ()=>{
+    document.getElementById('fileImport').click();
+  });
+  document.getElementById('fileImport').addEventListener('change', function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev){
+      try{
+        const parsed = JSON.parse(ev.target.result);
+        state.data = Object.assign(blankData(state.year), parsed);
+        render();
+        debounceSave();
+      }catch(err){
+        alert('Arquivo inválido. Selecione um backup .json exportado por este painel.');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+
+  // ---------- Navegação entre páginas ----------
+  function goToPage(p){
+    state.page = p;
+    document.getElementById('page-home').style.display = p==='home' ? '' : 'none';
+    document.getElementById('page-vps').style.display = p==='vps' ? '' : 'none';
+    document.getElementById('page-kaizen').style.display = p==='kaizen' ? '' : 'none';
+    document.getElementById('page-acidentes').style.display = p==='acidentes' ? '' : 'none';
+    document.getElementById('page-diario').style.display = p==='diario' ? '' : 'none';
+    document.getElementById('page-consolidado').style.display = p==='consolidado' ? '' : 'none';
+    document.getElementById('pageNav').style.display = p==='home' ? 'none' : 'flex';
+    document.querySelectorAll('.page-nav-btn').forEach(b=> b.classList.toggle('active', b.dataset.page===p));
+    if(p==='kaizen') renderKaizenPage();
+    if(p==='acidentes') renderAcidentesPage();
+    if(p==='diario') renderDiarioPage();
+    if(p==='consolidado') renderConsolidadoPage();
+  }
+  document.querySelectorAll('.page-nav-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> goToPage(btn.dataset.page));
+  });
+  document.getElementById('btnStartVps').addEventListener('click', ()=> goToPage('vps'));
+
+  // ---------- Kaizens Destaque ----------
+  function buildKaizenTabs(){
+    const wrap = document.getElementById('kaizenTabs');
+    wrap.innerHTML = '';
+    QUARTERS.forEach((q,i)=>{
+      const b = document.createElement('button');
+      b.className = 'nors-tab' + (i===state.kQIdx ? ' active' : '');
+      b.textContent = q.label;
+      b.addEventListener('click', ()=>{ state.kQIdx = i; renderKaizenPage(); });
+      wrap.appendChild(b);
+    });
+  }
+
+  function kaizenWeeksOfQuarter(qIdx){
+    const monthWeeks = monthWeeksOfYear(state.year);
+    const weeks = [];
+    QUARTERS[qIdx].months.forEach(mi=>{ monthWeeks[mi].forEach(gw=>weeks.push(gw)); });
+    return weeks;
+  }
+
+  function buildKaizenWeeks(){
+    const weeks = kaizenWeeksOfQuarter(state.kQIdx);
+    let html = '<div class="kaizen-grid">';
+    weeks.forEach(gw=>{
+      const dateLabel = esc(weekRangeLabel(state.year, gw));
+      const photos = state.kaizenPhotos[gw];
+      const note = esc(state.data.kaizenNotes[gw] || '');
+      let photoInner;
+      if(photos === undefined){
+        photoInner = `<span class="kaizen-photo-label label-empty">Carregando…</span>`;
+      }else if(photos.length === 0){
+        photoInner = `<label class="kaizen-photo-label label-empty"><span>+</span>Adicionar foto
+          <input class="kaizen-photo-input" type="file" accept="image/*" data-type="kaizen-photo" data-gw="${gw}">
+        </label>`;
+      }else{
+        photoInner = photos.map((p, idx)=>`
+          <div class="kaizen-photo-thumb" data-type="kaizen-photo-open" data-gw="${gw}" data-idx="${idx}" title="Clique para ampliar">
+            <img src="${p}" alt="Foto ${idx+1} do kaizen W${pad(gw)}">
+            <button type="button" class="kaizen-photo-remove" data-type="kaizen-photo-remove" data-gw="${gw}" data-idx="${idx}" title="Remover foto">✕</button>
+          </div>`).join('') +
+          `<label class="kaizen-photo-label" title="Adicionar mais uma foto"><span>+</span>Adicionar
+            <input class="kaizen-photo-input" type="file" accept="image/*" data-type="kaizen-photo" data-gw="${gw}">
+          </label>`;
+      }
+      html += `<div class="kaizen-card">
+        <div class="kaizen-card-head"><span>W${pad(gw)}</span><span class="wdate">${dateLabel}</span></div>
+        <div class="kaizen-photo-zone">${photoInner}</div>
+        <textarea class="kaizen-text" data-type="kaizen-note" data-gw="${gw}" placeholder="Descreva o kaizen destaque da semana...">${note}</textarea>
+      </div>`;
+    });
+    html += '</div>';
+    document.getElementById('kaizenWrap').innerHTML = html;
+  }
+
+  // Converte o valor salvo (pode ser uma lista JSON de fotos, ou uma foto única no formato antigo) em array
+  function parsePhotosValue(raw){
+    if(!raw) return [];
+    try{
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [raw];
+    }catch(e){
+      return [raw]; // formato antigo: uma única data URL
+    }
+  }
+
+  async function loadKaizenQuarterPhotos(qIdx){
+    const weeks = kaizenWeeksOfQuarter(qIdx);
+    const branch = state.branch;
+    await Promise.all(weeks.map(async gw=>{
+      if(state.kaizenPhotos[gw] !== undefined) return;
+      try{
+        const res = await window.storage.get(photoKey(state.year, gw, branch), false);
+        state.kaizenPhotos[gw] = (res && res.value) ? parsePhotosValue(res.value) : [];
+      }catch(e){
+        state.kaizenPhotos[gw] = [];
+      }
+    }));
+  }
+
+  async function saveKaizenPhotos(gw){
+    const photos = state.kaizenPhotos[gw] || [];
+    try{
+      if(photos.length === 0){
+        await window.storage.delete(photoKey(state.year, gw, state.branch), false);
+      }else{
+        await window.storage.set(photoKey(state.year, gw, state.branch), JSON.stringify(photos), false);
+      }
+    }catch(err){
+      alert('Não foi possível salvar a(s) foto(s). Tente uma imagem menor.');
+    }
+  }
+
+  async function renderKaizenPage(){
+    buildKaizenTabs();
+    document.getElementById('kYrLabel').textContent = state.year;
+    buildKaizenWeeks();
+    await loadKaizenQuarterPhotos(state.kQIdx);
+    buildKaizenWeeks();
+  }
+
+  // Reduz e comprime a imagem antes de guardar (evita estourar o limite de armazenamento)
+  function resizeImageFile(file, maxDim, quality){
+    return new Promise((resolve, reject)=>{
+      const reader = new FileReader();
+      reader.onload = function(e){
+        const img = new Image();
+        img.onload = function(){
+          let w = img.width, h = img.height;
+          if(w > h){ if(w > maxDim){ h = Math.round(h*maxDim/w); w = maxDim; } }
+          else{ if(h > maxDim){ w = Math.round(w*maxDim/h); h = maxDim; } }
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  document.addEventListener('change', function(e){
+    const t = e.target;
+    if(!t.dataset || t.dataset.type !== 'kaizen-photo') return;
+    const gw = Number(t.dataset.gw);
+    const file = t.files && t.files[0];
+    if(!file) return;
+    resizeImageFile(file, 900, 0.72).then(async dataURL=>{
+      if(!Array.isArray(state.kaizenPhotos[gw])) state.kaizenPhotos[gw] = [];
+      state.kaizenPhotos[gw].push(dataURL);
+      buildKaizenWeeks();
+      await saveKaizenPhotos(gw);
+    }).catch(()=>{
+      alert('Não foi possível processar essa imagem.');
+    });
+  });
+
+  document.addEventListener('click', function(e){
+    const removeBtn = e.target.closest('[data-type="kaizen-photo-remove"]');
+    if(removeBtn){
+      e.stopPropagation();
+      const gw = Number(removeBtn.dataset.gw);
+      const idx = Number(removeBtn.dataset.idx);
+      if(Array.isArray(state.kaizenPhotos[gw])) state.kaizenPhotos[gw].splice(idx, 1);
+      buildKaizenWeeks();
+      saveKaizenPhotos(gw);
+      return;
+    }
+    const openThumb = e.target.closest('[data-type="kaizen-photo-open"]');
+    if(openThumb){
+      const gw = Number(openThumb.dataset.gw);
+      const idx = Number(openThumb.dataset.idx);
+      const photos = state.kaizenPhotos[gw];
+      if(photos && photos[idx]) openLightbox(photos[idx]);
+    }
+  });
+
+  // ---------- Lightbox (ampliar foto) ----------
+  function openLightbox(src){
+    const overlay = document.createElement('div');
+    overlay.className = 'nors-lightbox';
+    overlay.innerHTML = `<button type="button" class="nors-lightbox-close" title="Fechar">✕</button><img src="${src}" alt="Ampliação da foto">`;
+    overlay.addEventListener('click', ()=> overlay.remove());
+    document.body.appendChild(overlay);
+  }
+
+  // ---------- Página Acidentes ----------
+  const ACIDENTES_KEY = 'nors-acidentes-dashboard';
+
+  async function loadAcidentesDashboard(){
+    if(state.acidentes !== undefined) return;
+    try{
+      const res = await window.storage.get(ACIDENTES_KEY, false);
+      state.acidentes = (res && res.value) ? JSON.parse(res.value) : null;
+    }catch(e){
+      state.acidentes = null;
+    }
+  }
+
+  function buildAcidentesDisplay(){
+    const wrap = document.getElementById('acidentesDisplay');
+    const meta = document.getElementById('acidentesMeta');
+    const dash = state.acidentes;
+    if(!dash){
+      meta.style.display = 'none';
+      wrap.innerHTML = '<span class="acidentes-empty">Nenhum dashboard anexado ainda. Cole um link ou anexe um arquivo acima.</span>';
+      return;
+    }
+    meta.style.display = 'flex';
+    const savedLabel = dash.savedAt ? new Date(dash.savedAt).toLocaleString('pt-BR') : '';
+    meta.innerHTML = `<span>Fonte: ${dash.type==='link' ? 'link externo' : (dash.type==='pdf' ? 'arquivo PDF' : 'imagem')}</span><span>${savedLabel ? 'Atualizado em '+esc(savedLabel) : ''}</span>`;
+    if(dash.type === 'link'){
+      wrap.innerHTML = `<iframe src="${esc(dash.value)}" title="Dashboard de acidentes" allowfullscreen></iframe>`;
+    }else if(dash.type === 'pdf'){
+      wrap.innerHTML = `<embed src="${dash.value}" type="application/pdf">`;
+    }else{
+      wrap.innerHTML = `<img src="${dash.value}" alt="Dashboard de acidentes" data-type="acidentes-open">`;
+    }
+  }
+
+  async function renderAcidentesPage(){
+    await loadAcidentesDashboard();
+    buildAcidentesDisplay();
+  }
+
+  document.getElementById('acidentesLinkSave').addEventListener('click', async ()=>{
+    const input = document.getElementById('acidentesLinkInput');
+    const url = input.value.trim();
+    if(!url){ alert('Cole o link de publicação do dashboard antes de salvar.'); return; }
+    if(/\.pbix($|\?)/i.test(url)){
+      alert('Esse é um link de arquivo .pbix, que não pode ser exibido no navegador.\n\nAbra o relatório no Power BI Desktop ou no serviço Power BI e use "Publicar na Web" para gerar um link do tipo https://app.powerbi.com/view?r=..., depois cole esse link aqui.');
+      return;
+    }
+    let parsed;
+    try{ parsed = new URL(url); }catch(e){ alert('Esse link não parece válido. Cole a URL completa (começando com https://).'); return; }
+    if(!/^https?:$/.test(parsed.protocol)){
+      alert('O link precisa começar com http:// ou https://.');
+      return;
+    }
+    state.acidentes = {type:'link', value:url, savedAt:Date.now()};
+    buildAcidentesDisplay();
+    try{
+      await window.storage.set(ACIDENTES_KEY, JSON.stringify(state.acidentes), false);
+    }catch(err){
+      alert('Não foi possível salvar o link do dashboard.');
+    }
+  });
+
+  document.getElementById('acidentesFileInput').addEventListener('change', function(e){
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    const finish = async (type, dataURL)=>{
+      state.acidentes = {type, value:dataURL, savedAt:Date.now()};
+      buildAcidentesDisplay();
+      try{
+        await window.storage.set(ACIDENTES_KEY, JSON.stringify(state.acidentes), false);
+      }catch(err){
+        alert('Não foi possível salvar o dashboard. Tente um arquivo menor.');
+      }
+    };
+    if(file.type === 'application/pdf'){
+      const reader = new FileReader();
+      reader.onload = ev=> finish('pdf', ev.target.result);
+      reader.onerror = ()=> alert('Não foi possível ler esse PDF.');
+      reader.readAsDataURL(file);
+    }else{
+      resizeImageFile(file, 1600, 0.85).then(dataURL=> finish('image', dataURL))
+        .catch(()=> alert('Não foi possível processar essa imagem.'));
+    }
+    e.target.value = '';
+  });
+
+  document.getElementById('acidentesRemove').addEventListener('click', async ()=>{
+    if(!state.acidentes){ return; }
+    if(!confirm('Remover o dashboard de acidentes salvo?')) return;
+    state.acidentes = null;
+    document.getElementById('acidentesLinkInput').value = '';
+    buildAcidentesDisplay();
+    try{
+      await window.storage.delete(ACIDENTES_KEY, false);
+    }catch(err){ /* ignore */ }
+  });
+
+  document.addEventListener('click', function(e){
+    const img = e.target.closest('[data-type="acidentes-open"]');
+    if(img) openLightbox(img.src);
+  });
+
+  // ---------- Página Diário de Bordo ----------
+  function diarioKey(year, branch){ return 'nors-diario-'+branch+':'+year; }
+
+  function blankDiario(){ return { rows: [] }; }
+
+  function newDiarioRowId(){ return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+
+  function setDiarioSavePill(text, active){
+    const p = document.getElementById('diarioSavePill');
+    if(!p) return;
+    p.textContent = text;
+    p.classList.toggle('saving', !!active);
+  }
+
+  async function loadDiario(year, branch){
+    setDiarioSavePill('carregando…', true);
+    let loaded = null;
+    try{
+      const res = await window.storage.get(diarioKey(year, branch), false);
+      if(res && res.value) loaded = JSON.parse(res.value);
+    }catch(e){ /* not found or error -> blank */ }
+    state.diario = (loaded && Array.isArray(loaded.rows)) ? loaded : blankDiario();
+    setDiarioSavePill('salvo', false);
+  }
+
+  function debounceSaveDiario(){
+    setDiarioSavePill('salvando…', true);
+    clearTimeout(state.diarioSaveTimer);
+    state.diarioSaveTimer = setTimeout(async ()=>{
+      try{
+        await window.storage.set(diarioKey(state.year, state.branch), JSON.stringify(state.diario), false);
+        setDiarioSavePill('salvo', false);
+      }catch(e){
+        setDiarioSavePill('não salvo (offline)', true);
+      }
+    }, 500);
+  }
+
+  function buildDiarioLegend(){
+    const wrap = document.getElementById('diarioLegend');
+    if(!wrap) return;
+    wrap.innerHTML = DIARIO_STATUS.map(s=>
+      `<span class="legend-item"><span class="legend-dot" style="background:${s.color}"></span>${esc(s.label)}</span>`
+    ).join('');
+  }
+
+  function diarioRowHtml(r, idx){
+    const st = DIARIO_STATUS.find(s=>s.id===r.status) || DIARIO_STATUS[0];
+    const codigoVisible = r.kaizen === 'sim';
+    return `<tr data-row-id="${r.id}">
+      <td class="diario-num">${idx+1}</td>
+      <td><input type="date" data-type="diario-field" data-field="dataRegistro" value="${esc(r.dataRegistro)}"></td>
+      <td><input type="text" data-type="diario-field" data-field="setor" value="${esc(r.setor)}" placeholder="Setor"></td>
+      <td><textarea data-type="diario-field" data-field="descricao" placeholder="Descreva o problema, desvio ou oportunidade...">${esc(r.descricao)}</textarea></td>
+      <td><textarea data-type="diario-field" data-field="acao" placeholder="Descreva a ação...">${esc(r.acao)}</textarea></td>
+      <td class="diario-kaizen-cell">
+        <select data-type="diario-field" data-field="kaizen">
+          <option value="nao" ${r.kaizen==='sim' ? '' : 'selected'}>Não</option>
+          <option value="sim" ${r.kaizen==='sim' ? 'selected' : ''}>Sim</option>
+        </select>
+        <input type="text" data-type="diario-field" data-field="kaizenCodigo" value="${esc(r.kaizenCodigo)}" placeholder="Código do Kaizen" ${codigoVisible ? '' : 'style="display:none"'}>
+      </td>
+      <td><input type="text" data-type="diario-field" data-field="resp" value="${esc(r.resp)}" placeholder="Responsável"></td>
+      <td><select class="diario-status-select" data-type="diario-field" data-field="status" style="background:${st.color}">
+        ${DIARIO_STATUS.map(s=>`<option value="${s.id}" ${s.id===r.status ? 'selected' : ''}>${esc(s.label)}</option>`).join('')}
+      </select></td>
+      <td><input type="date" data-type="diario-field" data-field="prazo" value="${esc(r.prazo)}"></td>
+      <td class="diario-row-actions"><button type="button" class="diario-del-btn" data-type="diario-remove" title="Remover linha">✕</button></td>
+    </tr>`;
+  }
+
+  function buildDiarioTable(){
+    const tbody = document.getElementById('diarioBody');
+    if(!tbody) return;
+    const rows = (state.diario && state.diario.rows) || [];
+    if(rows.length === 0){
+      tbody.innerHTML = `<tr class="diario-empty-row"><td colspan="10">Nenhum registro ainda. Clique em "+ Adicionar linha" para começar.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = rows.map((r, idx)=> diarioRowHtml(r, idx)).join('');
+  }
+
+  function addDiarioRow(){
+    if(!state.diario) state.diario = blankDiario();
+    state.diario.rows.push({
+      id:newDiarioRowId(), dataRegistro:'', setor:'', descricao:'', acao:'',
+      kaizen:'nao', kaizenCodigo:'', resp:'', status:'sem_definicao', prazo:''
+    });
+    buildDiarioTable();
+    debounceSaveDiario();
+  }
+
+  function removeDiarioRow(id){
+    if(!state.diario) return;
+    state.diario.rows = state.diario.rows.filter(r=> r.id !== id);
+    buildDiarioTable();
+    debounceSaveDiario();
+  }
+
+  async function renderDiarioPage(){
+    const subtitle = document.getElementById('diarioSubtitle');
+    if(subtitle) subtitle.textContent = 'Registro de problemas, desvios e oportunidades · Filial: ' + branchLabel(state.branch) + ' · ' + state.year;
+    buildDiarioLegend();
+    await loadDiario(state.year, state.branch);
+    buildDiarioTable();
+  }
+
+  document.getElementById('diarioAddRow').addEventListener('click', addDiarioRow);
+
+  function diarioFieldHandler(e){
+    const t = e.target;
+    if(!t.dataset || t.dataset.type !== 'diario-field') return;
+    const tr = t.closest('tr[data-row-id]');
+    if(!tr || !state.diario) return;
+    const row = state.diario.rows.find(r=> r.id === tr.dataset.rowId);
+    if(!row) return;
+    const field = t.dataset.field;
+    row[field] = t.value;
+    if(field === 'kaizen'){
+      const codigoInput = tr.querySelector('[data-field="kaizenCodigo"]');
+      if(codigoInput) codigoInput.style.display = t.value === 'sim' ? '' : 'none';
+    }
+    if(field === 'status'){
+      const st = DIARIO_STATUS.find(s=> s.id === t.value) || DIARIO_STATUS[0];
+      t.style.background = st.color;
+    }
+    debounceSaveDiario();
+  }
+  document.addEventListener('input', diarioFieldHandler);
+  document.addEventListener('change', diarioFieldHandler);
+
+  document.addEventListener('click', function(e){
+    const delBtn = e.target.closest('[data-type="diario-remove"]');
+    if(!delBtn) return;
+    const tr = delBtn.closest('tr[data-row-id]');
+    if(!tr) return;
+    if(!confirm('Remover esta linha do Diário de Bordo?')) return;
+    removeDiarioRow(tr.dataset.rowId);
+  });
+
+  // ---------- Página Consolidado (v2.0) ----------
+  const PAP_ORDER = ['pp_agend_ps','pp_agend_of','pp_nagend_ps','pp_nagend_of'];
+  const PAP_METRICS = PAP_ORDER.map(id=> METRICS.find(m=> m.id===id));
+  const M_PS = METRICS.find(m=> m.id==='pp_agend_ps');
+  const M_OF = METRICS.find(m=> m.id==='pp_agend_of');
+  const PAP_AGEND_IDS = ['pp_agend_ps','pp_agend_of'];
+  const PAP_PASS_IDS = ['pp_nagend_ps','pp_nagend_of'];
+  const KAIZEN_ELAB_ID = 'kaizen_elab';
+  const KAIZEN_IMPL_ID = 'kaizen_impl';
+  const ACID_IDS = ['acid_afast','acid_sem'];
+
+  state.consolidado = { year:null, loading:false, branches:{}, diario:{}, qIdx:0, sel:'all', sort:{key:'label', dir:1} };
+
+  function setConsPill(text, active){
+    const p = document.getElementById('consLoadPill');
+    if(!p) return;
+    p.textContent = text;
+    p.classList.toggle('saving', !!active);
+  }
+
+  async function loadConsolidadoData(year){
+    state.consolidado.loading = true;
+    setConsPill('carregando…', true);
+    const branches = {}, diario = {};
+    await Promise.all(BRANCHES.map(async b=>{
+      try{
+        const res = await window.storage.get(storageKey(year, b.id), false);
+        branches[b.id] = (res && res.value) ? JSON.parse(res.value) : blankData(year);
+      }catch(e){ branches[b.id] = blankData(year); }
+      try{
+        const dres = await window.storage.get(diarioKey(year, b.id), false);
+        const loaded = (dres && dres.value) ? JSON.parse(dres.value) : null;
+        diario[b.id] = (loaded && Array.isArray(loaded.rows)) ? loaded : blankDiario();
+      }catch(e){ diario[b.id] = blankDiario(); }
+    }));
+    state.consolidado.year = year;
+    state.consolidado.branches = branches;
+    state.consolidado.diario = diario;
+    state.consolidado.loading = false;
+    setConsPill('salvo', false);
+  }
+
+  const isNum = v => v!==undefined && v!==null && v!=='' && !isNaN(v);
+  function selList(){ const s = state.consolidado.sel; return s==='all' ? BRANCHES : BRANCHES.filter(b=> b.id===s); }
+  function avgOf(vals){ return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : null; }
+  function sumOrNull(vals){ return vals.length ? vals.reduce((a,b)=>a+b,0) : null; }
+  function consWeekValues(metricIds, gw){
+    const vals = [];
+    selList().forEach(b=>{
+      const bd = state.consolidado.branches[b.id];
+      if(!bd) return;
+      metricIds.forEach(id=>{ const v = bd.values[id] ? bd.values[id][gw] : undefined; if(isNum(v)) vals.push(Number(v)); });
+    });
+    return vals;
+  }
+  function consWeekAvg(metricId, gw){ return avgOf(consWeekValues([metricId], gw)); }
+  function consFechMes(metricId, mi){
+    let vals = [];
+    monthWeeksOfYear(state.year)[mi].forEach(gw=> vals = vals.concat(consWeekValues([metricId], gw)));
+    return avgOf(vals);
+  }
+  function consMonthSum(metricId, mi){
+    let vals = [];
+    monthWeeksOfYear(state.year)[mi].forEach(gw=> vals = vals.concat(consWeekValues([metricId], gw)));
+    return sumOrNull(vals);
+  }
+  function branchAllValues(branchId, metricIds){
+    const bd = state.consolidado.branches[branchId];
+    if(!bd) return [];
+    let vals = [];
+    metricIds.forEach(id=>{ Object.values(bd.values[id] || {}).forEach(v=>{ if(isNum(v)) vals.push(Number(v)); }); });
+    return vals;
+  }
+  function branchSum(branchId, metricIds){ return branchAllValues(branchId, metricIds).reduce((a,b)=>a+b, 0); }
+  function branchAvg(branchId, metricIds){ return avgOf(branchAllValues(branchId, metricIds)); }
+  function branchPlanosCount(branchId){
+    const d = state.consolidado.diario[branchId];
+    return (d && Array.isArray(d.rows)) ? d.rows.length : 0;
+  }
+  function totalAllBranches(metricIds){ return BRANCHES.reduce((acc,b)=> acc + branchSum(b.id, metricIds), 0); }
+  function totalPlanos(){ return BRANCHES.reduce((acc,b)=> acc + branchPlanosCount(b.id), 0); }
+  function fmtMin(v){ return v===null || v===undefined ? '—' : Math.round(v) + ' min'; }
+  function fmtNum(v){ return v===null || v===undefined ? '—' : String(Math.round(v)); }
+  function fmtPct(v){ return v===null || v===undefined ? '—' : (Math.round(v*10)/10).toString().replace('.',',') + '%'; }
+  function statusCls(v, m){ const c = pmClass(v, m.pmMeta, m.pmDir); return c==='pm-ok' ? 'ok' : c==='pm-bad' ? 'bad' : 'na'; }
+  function pctOf(im, el){ return el > 0 ? im/el*100 : null; }
+
+  function buildConsFilter(){
+    const sel = state.consolidado.sel;
+    const chips = [{id:'all', label:'Todas as filiais'}].concat(BRANCHES);
+    document.getElementById('consFilter').innerHTML = chips.map(c=>
+      `<button class="c2-chip${sel===c.id?' on':''}" data-chip="${c.id}">${esc(c.label)}</button>`).join('');
+    document.getElementById('consScope').textContent = sel==='all' ? 'Todas as filiais · ano todo' : 'Filial: ' + branchLabel(sel) + ' · ano todo';
+  }
+
+  function papCard(m, title){
+    const L = selList();
+    const v = avgOf(L.flatMap(b=> branchAllValues(b.id, [m.id])));
+    const s = statusCls(v, m);
+    const w = v===null ? 0 : Math.min(100, v/(m.pmMeta*1.5)*100);
+    const diff = v===null ? '' : ' · ' + (Math.round(v)-m.pmMeta>0?'+':'') + (Math.round(v)-m.pmMeta) + ' min vs meta';
+    const badge = s==='ok' ? 'Na meta' : s==='bad' ? 'Acima da meta' : 'Sem dados';
+    return `<div class="c2-card ${s}" data-tip="${esc('Média dos lançamentos semanais · meta até '+m.pmMeta+' min')}"><div class="c2-top"><span class="c2-label">${title}</span><span class="c2-badge ${s}">${badge}</span></div>`+
+      `<div class="c2-num">${v===null?'—':Math.round(v)}<small>min</small></div>`+
+      `<div class="c2-gauge"><i style="width:${w}%"></i><b style="left:66.67%"></b></div>`+
+      `<div class="c2-note">Meta: até ${m.pmMeta} min = verde${diff}</div></div>`;
+  }
+
+  function ringSvg(pct, size, sw){
+    const r = (size-sw)/2, c = 2*Math.PI*r, p = pct===null ? 0 : Math.max(0, Math.min(100, pct));
+    return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--track)" stroke-width="${sw}"/>`+
+      `<circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--teal)" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c*p/100} ${c}" transform="rotate(-90 ${size/2} ${size/2})"/>`+
+      `<text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-family="Barlow Condensed,sans-serif" font-weight="700" font-size="${size/4.4}" fill="var(--ink)">${pct===null?'—':fmtPct(pct)}</text></svg>`;
+  }
+
+  function buildConsCards(){
+    const L = selList();
+    const el = L.reduce((a,b)=> a + branchSum(b.id,[KAIZEN_ELAB_ID]), 0);
+    const im = L.reduce((a,b)=> a + branchSum(b.id,[KAIZEN_IMPL_ID]), 0);
+    const pct = pctOf(im, el);
+    const pass = avgOf(L.flatMap(b=> branchAllValues(b.id, PAP_PASS_IDS)));
+    const acid = L.reduce((a,b)=> a + branchSum(b.id, ACID_IDS), 0);
+    const planos = L.reduce((a,b)=> a + branchPlanosCount(b.id), 0);
+    let html = papCard(M_PS, 'PAP Agendado · PIT STOP') + papCard(M_OF, 'PAP Agendado · OFICINA');
+    html += `<div class="c2-card teal"><div class="c2-top"><span class="c2-label">Kaizens · % implementado</span></div><div class="c2-ring">${ringSvg(pct, 74, 9)}<div><div class="c2-num" style="font-size:24px">${fmtNum(im)}<small>de ${fmtNum(el)}</small></div><div class="c2-note">implementados sobre criados</div></div></div></div>`;
+    html += `<div class="c2-card"><div class="c2-top"><span class="c2-label">PAP médio · Passante</span></div><div class="c2-num">${pass===null?'—':Math.round(pass)}<small>min</small></div><div class="c2-note">PIT STOP + OFICINA, não agendados</div></div>`;
+    html += `<div class="c2-card"><div class="c2-top"><span class="c2-label">Total de Acidentes</span></div><div class="c2-num">${fmtNum(acid)}</div><div class="c2-note">Com + sem afastamento</div></div>`;
+    html += `<div class="c2-card"><div class="c2-top"><span class="c2-label">Planos de Ação</span></div><div class="c2-num">${fmtNum(planos)}</div><div class="c2-note">Registros no Diário de Bordo</div></div>`;
+    document.getElementById('consCards').innerHTML = html;
+  }
+
+  function barPanel(m, title){
+    const rows = BRANCHES.map(b=> ({b, v: branchAvg(b.id,[m.id])}));
+    const all = avgOf(BRANCHES.flatMap(b=> branchAllValues(b.id,[m.id])));
+    const mx = Math.max(m.pmMeta*1.5, ...rows.map(r=> r.v||0), all||0);
+    const row = (id, name, v, cls)=>{
+      const s = statusCls(v, m), w = v===null ? 0 : v/mx*100;
+      const tip = name + ': ' + (v===null ? 'sem dados' : Math.round(v)+' min') + ' · meta até ' + m.pmMeta + ' min';
+      return `<div class="c2-row ${cls||''}${id && state.consolidado.sel===id ? ' sel' : ''}" ${id?`data-sel="${id}"`:''} data-tip="${esc(tip)}"><span class="c2-name">${esc(name)}</span><div class="c2-track"><div class="c2-fill ${s}" style="width:${w}%"></div><span class="c2-meta" style="left:${m.pmMeta/mx*100}%"></span></div><span class="c2-val">${v===null?'—':Math.round(v)+' min'}</span></div>`;
+    };
+    return `<div class="c2-panel"><h3>${title}</h3><p class="c2-sub">Meta: até ${m.pmMeta} min = verde · média do ano</p>${rows.map(r=> row(r.b.id, r.b.label, r.v)).join('')}${row(null,'Consolidado',all,'tot')}</div>`;
+  }
+  function buildConsCharts(){
+    document.getElementById('consCharts').innerHTML = barPanel(M_PS,'PAP Agendado · PIT STOP') + barPanel(M_OF,'PAP Agendado · OFICINA');
+  }
+
+  function buildConsKaizen(){
+    const rows = BRANCHES.map(b=>{ const el = branchSum(b.id,[KAIZEN_ELAB_ID]), im = branchSum(b.id,[KAIZEN_IMPL_ID]); return {b, el, im, pct:pctOf(im,el)}; });
+    const tEl = rows.reduce((a,r)=>a+r.el,0), tIm = rows.reduce((a,r)=>a+r.im,0), tPct = pctOf(tIm,tEl);
+    const mx = Math.max(1, ...rows.map(r=> r.el));
+    const row = (r)=> `<div class="c2-row k${state.consolidado.sel===r.b.id?' sel':''}" data-sel="${r.b.id}" data-tip="${esc(r.b.label+': '+r.im+' implementados de '+r.el+' criados ('+fmtPct(r.pct)+')')}"><span class="c2-name">${esc(r.b.label)}</span><div class="c2-track" style="width:${Math.max(4,r.el/mx*100)}%;background:var(--track)"><div class="c2-fill teal" style="width:${r.el>0?r.im/r.el*100:0}%"></div></div><span class="c2-val">${r.im}/${r.el} · ${fmtPct(r.pct)}</span></div>`;
+    document.getElementById('consKaizen').innerHTML =
+      `<div class="c2-panel"><h3>Total de Kaizens · todas as filiais</h3><p class="c2-sub">Implementados sobre o total criado</p><div class="c2-ring">${ringSvg(tPct, 120, 13)}<div><div class="c2-num">${tIm}<small>implementados</small></div><div class="c2-note" style="margin-top:6px">de ${tEl} criados · ${tEl-tIm} ainda a implementar</div></div></div></div>`+
+      `<div class="c2-panel"><h3>% implementado por filial</h3><p class="c2-sub">Barra clara = criados · barra verde = implementados</p>${rows.map(row).join('')}</div>`;
+  }
+
+  const BT_COLS = [['label','Filial'],['ps','PAP Agendado PIT STOP'],['of','PAP Agendado OFICINA'],['pass','PAP Passante (méd.)'],['el','Kaizens criados'],['im','Kaizens implementados'],['pct','% implementado'],['ac','Acidentes'],['pl','Planos de ação']];
+  function branchRows(){
+    return BRANCHES.map(b=>{
+      const el = branchSum(b.id,[KAIZEN_ELAB_ID]), im = branchSum(b.id,[KAIZEN_IMPL_ID]);
+      return {id:b.id, label:b.label, ps:branchAvg(b.id,['pp_agend_ps']), of:branchAvg(b.id,['pp_agend_of']), pass:branchAvg(b.id,PAP_PASS_IDS), el, im, pct:pctOf(im,el), ac:branchSum(b.id,ACID_IDS), pl:branchPlanosCount(b.id)};
+    });
+  }
+  function totalRow(){
+    const el = totalAllBranches([KAIZEN_ELAB_ID]), im = totalAllBranches([KAIZEN_IMPL_ID]);
+    const av = ids => avgOf(BRANCHES.flatMap(b=> branchAllValues(b.id, ids)));
+    return {label:'Consolidado', ps:av(['pp_agend_ps']), of:av(['pp_agend_of']), pass:av(PAP_PASS_IDS), el, im, pct:pctOf(im,el), ac:totalAllBranches(ACID_IDS), pl:totalPlanos()};
+  }
+  function btCell(k, r){
+    if(k==='label') return `<td class="cbt-label">${esc(r.label)}</td>`;
+    if(k==='ps' || k==='of'){ const m = k==='ps' ? M_PS : M_OF; return `<td class="${pmClass(r[k], m.pmMeta, m.pmDir)}"><span class="fech-readonly">${fmtMin(r[k])}</span></td>`; }
+    if(k==='pass') return `<td>${fmtMin(r.pass)}</td>`;
+    if(k==='pct') return `<td><strong>${fmtPct(r.pct)}</strong><span class="c2-pctbar"><i style="width:${r.pct||0}%"></i></span></td>`;
+    return `<td>${fmtNum(r[k])}</td>`;
+  }
+  function buildConsBranchTable(){
+    const {key, dir} = state.consolidado.sort;
+    const rows = branchRows().sort((a,b)=>{
+      const x = a[key], y = b[key];
+      if(x===null && y===null) return 0; if(x===null) return 1; if(y===null) return -1;
+      return (typeof x==='string' ? x.localeCompare(y) : x-y) * dir;
+    });
+    let html = '<table class="cons-branch-table"><thead><tr>';
+    BT_COLS.forEach(([k,l])=> html += `<th class="sortable" data-sort="${k}">${l}${key===k ? (dir>0?' ▲':' ▼') : ''}</th>`);
+    html += '</tr></thead><tbody>';
+    rows.forEach(r=>{ html += `<tr class="${state.consolidado.sel===r.id?'sel':''}">` + BT_COLS.map(([k])=> btCell(k,r)).join('') + '</tr>'; });
+    const t = totalRow();
+    html += '</tbody><tfoot><tr>' + BT_COLS.map(([k])=> btCell(k,t).replace(/class="(pm-ok|pm-bad)"/,'')).join('') + '</tr></tfoot></table>';
+    document.getElementById('consBranchTableWrap').innerHTML = html;
+  }
+
+  function buildConsTabs(){
+    const wrap = document.getElementById('consTabs');
+    wrap.innerHTML = '';
+    QUARTERS.forEach((q,i)=>{
+      const b = document.createElement('button');
+      b.className = 'nors-tab' + (i===state.consolidado.qIdx ? ' active' : '');
+      b.textContent = q.label;
+      b.addEventListener('click', ()=>{ state.consolidado.qIdx = i; buildConsTable(); document.querySelectorAll('#consTabs .nors-tab').forEach((bb,ii)=> bb.classList.toggle('active', ii===i)); });
+      wrap.appendChild(b);
+    });
+  }
+
+  function buildConsTable(){
+    const q = QUARTERS[state.consolidado.qIdx];
+    const monthWeeks = monthWeeksOfYear(state.year);
+    const sel = state.consolidado.sel;
+    document.getElementById('consWeekNote').textContent = (sel==='all' ? 'Média (PAP) e soma (Kaizen) entre as filiais' : 'Filial: ' + branchLabel(sel)) + ' · cada célula usa os lançamentos da semana';
+    let html = '<table class="nors-table"><thead><tr><th class="th-label"></th>';
+    q.months.forEach(mi=>{
+      const bg = mi%2===0 ? 'var(--slate)' : 'var(--slate-2)';
+      html += `<th class="month-head" colspan="${monthWeeks[mi].length + 1}" style="background:${bg}">${MONTH_NAMES[mi]}</th>`;
+    });
+    html += '</tr><tr><th class="th-label">Semana <span style="color:var(--muted);font-weight:400">(sex–qui, calculado)</span></th>';
+    q.months.forEach(mi=>{
+      monthWeeks[mi].forEach((gw, w)=>{
+        html += `<th class="week-head${w===0?' month-sep':''}"><span class="wlabel">W${pad(gw)}</span><span class="wdate">${esc(weekRangeLabel(state.year, gw))}</span></th>`;
+      });
+      html += '<th class="week-head fech-head"><span class="wlabel">FECH MÊS</span></th>';
+    });
+    html += '</tr></thead><tbody>';
+    const span = q.months.reduce((acc,mi)=> acc + monthWeeks[mi].length + 1, 1);
+    const group = (g, txt)=> `<tr class="group-row" style="background:${g.color}"><td colspan="${span}" style="background:${g.color}">${txt}</td></tr>`;
+    const rowHtml = (label, g, cellFn)=>{
+      let h = `<tr class="metric-row" style="--grp-color:${g.color}"><td class="td-label">${label}</td>`;
+      q.months.forEach(mi=>{
+        const weeks = monthWeeks[mi];
+        weeks.forEach((gw,w)=>{ h += cellFn(gw, w===0 ? 'month-sep' : '', false, mi); });
+        h += cellFn(null, 'fech-cell', true, mi);
+      });
+      return h + '</tr>';
+    };
+    html += group(GROUPS.portaporta, 'Porta a Porta · ' + (sel==='all' ? 'média entre as filiais' : branchLabel(sel)));
+    PAP_METRICS.forEach(m=>{
+      const metaNote = ` <span class="group-note">· meta: até ${m.pmMeta} min = verde</span>`;
+      html += rowHtml(esc(m.label)+metaNote, GROUPS.portaporta, (gw, c, fech, mi)=>{
+        const v = fech ? consFechMes(m.id, mi) : consWeekAvg(m.id, gw);
+        return `<td class="${[c, pmClass(v, m.pmMeta, m.pmDir)].filter(Boolean).join(' ')}"><span class="fech-readonly">${fmtFech(v)}</span></td>`;
+      });
+    });
+    html += group(GROUPS.kaizen, 'Kaizen · ' + (sel==='all' ? 'soma entre as filiais' : branchLabel(sel)));
+    const wk = (id, gw)=> sumOrNull(consWeekValues([id], gw));
+    html += rowHtml('Quant. Kaizens criados (elaborados)', GROUPS.kaizen, (gw,c,fech,mi)=>{
+      const v = fech ? consMonthSum(KAIZEN_ELAB_ID, mi) : wk(KAIZEN_ELAB_ID, gw);
+      return `<td class="${c}"><span class="fech-readonly">${fmtFech(v)}</span></td>`;
+    });
+    html += rowHtml('Quant. Kaizens implementados <span class="group-note">· fech. mês: 10 ou mais = verde</span>', GROUPS.kaizen, (gw,c,fech,mi)=>{
+      const v = fech ? consMonthSum(KAIZEN_IMPL_ID, mi) : wk(KAIZEN_IMPL_ID, gw);
+      return `<td class="${[c, fech ? pmClass(v,10,'above') : ''].filter(Boolean).join(' ')}"><span class="fech-readonly">${fmtFech(v)}</span></td>`;
+    });
+    html += rowHtml('% Kaizens implementados sobre criados', GROUPS.kaizen, (gw,c,fech,mi)=>{
+      const el = fech ? consMonthSum(KAIZEN_ELAB_ID, mi) : wk(KAIZEN_ELAB_ID, gw);
+      const im = fech ? consMonthSum(KAIZEN_IMPL_ID, mi) : wk(KAIZEN_IMPL_ID, gw);
+      return `<td class="${c}"><span class="fech-readonly">${el>0 && im!==null ? fmtPct(im/el*100) : ''}</span></td>`;
+    });
+    html += '</tbody></table>';
+    document.getElementById('consTableWrap').innerHTML = html;
+  }
+
+  function buildConsAll(){
+    buildConsFilter(); buildConsCards(); buildConsCharts(); buildConsKaizen();
+    buildConsBranchTable(); buildConsTabs(); buildConsTable();
+  }
+
+  async function renderConsolidadoPage(){
+    document.getElementById('consYrLabel').textContent = state.year;
+    if(state.consolidado.year !== state.year && !state.consolidado.loading){
+      document.getElementById('consCards').innerHTML = '<div class="cons-loading">Carregando dados de todas as filiais…</div>';
+      ['consCharts','consKaizen','consBranchTableWrap','consTableWrap'].forEach(id=> document.getElementById(id).innerHTML = '');
+      await loadConsolidadoData(state.year);
+    }
+    buildConsAll();
+  }
+
+  document.getElementById('btnConsRefresh').addEventListener('click', async ()=>{
+    await loadConsolidadoData(state.year);
+    buildConsAll();
+  });
+
+  document.getElementById('btnConsExport').addEventListener('click', ()=>{
+    try{
+      const rows = branchRows().concat([totalRow()]);
+      const csv = [BT_COLS.map(c=>c[1]).join(';')].concat(rows.map(r=> BT_COLS.map(([k])=>{
+        const v = r[k]; if(v===null || v===undefined) return ''; return typeof v==='number' ? String(Math.round(v*10)/10).replace('.',',') : v;
+      }).join(';'))).join('\n');
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8'}));
+      a.download = 'consolidado-' + state.year + '.csv';
+      a.click();
+    }catch(e){ alert('Não foi possível exportar o CSV neste ambiente.'); }
+  });
+
+  document.getElementById('page-consolidado').addEventListener('click', function(e){
+    const chip = e.target.closest('[data-chip]');
+    const row = e.target.closest('[data-sel]');
+    const th = e.target.closest('th[data-sort]');
+    const st = state.consolidado;
+    if(chip){ st.sel = chip.dataset.chip; buildConsAll(); }
+    else if(row){ st.sel = (st.sel === row.dataset.sel) ? 'all' : row.dataset.sel; buildConsAll(); }
+    else if(th){ const k = th.dataset.sort; st.sort = {key:k, dir: st.sort.key===k ? -st.sort.dir : 1}; buildConsBranchTable(); }
+  });
+
+  document.addEventListener('mousemove', function(e){
+    const tipEl = document.getElementById('c2tip');
+    if(!tipEl) return;
+    const t = e.target.closest ? e.target.closest('#page-consolidado [data-tip]') : null;
+    if(!t){ tipEl.classList.remove('on'); return; }
+    tipEl.textContent = t.dataset.tip;
+    tipEl.style.left = Math.min(e.clientX + 14, window.innerWidth - 270) + 'px';
+    tipEl.style.top = (e.clientY + 14) + 'px';
+    tipEl.classList.add('on');
+  });
+
+  goToPage('home');
+  loadData(state.year, state.branch);
+})();
+</script>
+<script>
+(function(){
+var $=function(s,r){return(r||document).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))},pad=function(n){return n<10?'0'+n:''+n};
+var root=document.documentElement;
+function setTheme(t){root.setAttribute('data-theme',t);try{localStorage.setItem('nors-theme',t)}catch(e){}}
+var st=null;try{st=localStorage.getItem('nors-theme')}catch(e){}
+setTheme(st||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
+$('#themeBtn').addEventListener('click',function(){setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark')});
+function toast(msg,kind){var box=$('#toasts');$$('.toast',box).forEach(function(x){x.remove()});var t=document.createElement('div');t.className='toast '+(kind||'');t.textContent=msg;box.appendChild(t);setTimeout(function(){t.classList.add('out')},2200);setTimeout(function(){t.remove()},2600)}
+['savePill','diarioSavePill'].forEach(function(id){var el=document.getElementById(id),prev=el.textContent;new MutationObserver(function(){var n=el.textContent;if(n===prev)return;if(n==='salvo'&&prev==='salvando…')toast('Alterações salvas');else if(n.indexOf('não salvo')===0)toast('Não foi possível salvar. Verifique a conexão.','bad');prev=n}).observe(el,{childList:true,characterData:true,subtree:true})});
+var now=new Date(),nowY=now.getFullYear(),qNow=null;
+function f1(y){var j=new Date(Date.UTC(y,0,1));j.setUTCDate(j.getUTCDate()+(5-j.getUTCDay()+7)%7);return j}
+var gwNow=Math.floor((Date.UTC(nowY,now.getMonth(),now.getDate())-f1(nowY).getTime())/6048e5)+1;
+if(gwNow<1||gwNow>52)gwNow=null;
+function dm(d){return pad(d.getUTCDate())+'/'+pad(d.getUTCMonth()+1)}
+if(gwNow){var s0=f1(nowY);s0.setUTCDate(s0.getUTCDate()+(gwNow-1)*7);var e0=new Date(s0);e0.setUTCDate(e0.getUTCDate()+6);qNow=Math.floor(e0.getUTCMonth()/3);var wt='W'+pad(gwNow)+' · '+dm(s0)+'–'+dm(e0);$('#homeWeek').textContent='Semana atual · '+wt;$('#weekChip').textContent='Semana atual · '+wt}
+function markNow(wrap){if(!gwNow||+$('#yrLabel').textContent!==nowY)return;var tbl=$('table',wrap);if(!tbl)return;var hr=tbl.querySelectorAll('thead tr')[1];if(!hr)return;var idx=-1,lab='W'+pad(gwNow);Array.prototype.forEach.call(hr.children,function(th,i){var l=th.querySelector('.wlabel');if(l&&l.textContent===lab)idx=i});if(idx<0)return;hr.children[idx].classList.add('is-now');$$('tbody tr.metric-row',tbl).forEach(function(r){if(r.children[idx])r.children[idx].classList.add('is-now')})}
+['tableWrap','consTableWrap'].forEach(function(id){var w=document.getElementById(id);new MutationObserver(function(){markNow(w)}).observe(w,{childList:true})});
+function autoQ(id){var el=document.getElementById(id),done=false;new MutationObserver(function(){if(done||qNow===null)return;var b=el.querySelectorAll('.nors-tab');if(b.length<4)return;done=true;if(+$('#yrLabel').textContent===nowY&&!b[qNow].classList.contains('active'))b[qNow].click()}).observe(el,{childList:true})}
+['tabs','kaizenTabs','consTabs'].forEach(autoQ);
+$('#weekChip').addEventListener('click',function(){if(+$('#yrLabel').textContent!==nowY){toast('Altere o ano para '+nowY+' para ver a semana atual','bad');return}var b=$$('#tabs .nors-tab');if(b[qNow])b[qNow].click();setTimeout(function(){var th=$('#tableWrap th.is-now');if(th)th.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'})},80)});
+document.addEventListener('click',function(e){var g=e.target.closest('[data-go]');if(g){var b=$('.page-nav-btn[data-page="'+g.getAttribute('data-go')+'"]');if(b)b.click()}if(e.target.closest('.page-nav-btn,#btnStartVps,[data-go]'))window.scrollTo(0,0)});
+var hT=null,hI=-1;
+function clr(){if(hT)hT.querySelectorAll('.col-hl').forEach(function(x){x.classList.remove('col-hl')});hT=null;hI=-1}
+document.addEventListener('mouseover',function(e){var c=e.target.closest&&e.target.closest('.nors-table td,.nors-table th');if(!c||c.colSpan>1||c.parentElement.classList.contains('group-row')){clr();return}var t=c.closest('table'),i=Array.prototype.indexOf.call(c.parentElement.children,c);if(t===hT&&i===hI)return;clr();hT=t;hI=i;if(i<1)return;$$('tr',t).forEach(function(r){if(r.classList.contains('group-row'))return;var x=r.children[i];if(x&&x.colSpan===1)x.classList.add('col-hl')})});
+document.addEventListener('mouseout',function(e){var r=e.relatedTarget;if(!r||!r.closest||!r.closest('.nors-table'))clr()});
+document.addEventListener('focusin',function(e){if(e.target.matches&&e.target.matches('input.cell-num'))e.target.select()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=$('.nors-lightbox');if(lb)lb.remove();return}var t=e.target;if(!t.matches||!t.matches('input.cell-num'))return;var k=e.key;if(k!=='ArrowUp'&&k!=='ArrowDown'&&k!=='Enter')return;e.preventDefault();var td=t.closest('td'),tr=td.parentElement,i=Array.prototype.indexOf.call(tr.children,td),up=k==='ArrowUp'||(k==='Enter'&&e.shiftKey),r=up?tr.previousElementSibling:tr.nextElementSibling;while(r){var c=r.children[i],inp=c&&c.querySelector('input.cell-num');if(inp){inp.focus();return}r=up?r.previousElementSibling:r.nextElementSibling}});
+function zoneOf(e){return e.target.closest&&e.target.closest('.kaizen-photo-zone')}
+document.addEventListener('dragover',function(e){var z=zoneOf(e);if(z){e.preventDefault();z.classList.add('drop')}});
+document.addEventListener('dragleave',function(e){var z=zoneOf(e);if(z&&!z.contains(e.relatedTarget))z.classList.remove('drop')});
+document.addEventListener('drop',function(e){var z=zoneOf(e);if(!z)return;e.preventDefault();z.classList.remove('drop');var fl=[].filter.call(e.dataTransfer.files,function(f){return/^image\//.test(f.type)}),inp=z.querySelector('input.kaizen-photo-input');if(!fl.length||!inp)return;if(fl.length>1)toast('Envie uma foto por vez; a primeira será usada','bad');var dt=new DataTransfer();dt.items.add(fl[0]);inp.files=dt.files;inp.dispatchEvent(new Event('change',{bubbles:true}))});
+var ST=[['sem_definicao','Sem definição','#9099a3'],['planejada','Ação planejada','#c9a227'],['executada','Ação Executada','#2b6cb0'],['resultados','Resultados','#1f6b56'],['fechado','Fechado/Padronizado','#15171a']],fSt='all',fq='',chipsEl=$('#diarioChips');
+chipsEl.innerHTML=[['all','Todos','']].concat(ST,[['late','Atrasadas','#b3262c']]).map(function(c){return'<button type="button" class="dt-chip'+(c[0]==='all'?' on':'')+'" data-f="'+c[0]+'"'+(c[2]?' style="--c:'+c[2]+'"':'')+'>'+(c[2]?'<i></i>':'')+c[1]+' <b>0</b></button>'}).join('');
+function diarioApply(vis){var rows=$$('#diarioBody tr[data-row-id]'),d=new Date(),iso=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()),cnt={all:rows.length,late:0};ST.forEach(function(s){cnt[s[0]]=0});
+rows.forEach(function(r){var s=r.querySelector('[data-field=status]'),p=r.querySelector('[data-field=prazo]'),sv=s?s.value:'sem_definicao';cnt[sv]=(cnt[sv]||0)+1;var late=!!(p&&p.value&&p.value<iso&&sv!=='resultados'&&sv!=='fechado');if(late)cnt.late++;r.classList.toggle('overdue',late);
+if(vis){var txt='';$$('input,textarea',r).forEach(function(i){txt+=' '+i.value});r.style.display=((fSt==='all'||(fSt==='late'?late:sv===fSt))&&(!fq||txt.toLowerCase().indexOf(fq)>-1))?'':'none'}});
+var shown=rows.filter(function(r){return r.style.display!=='none'}).length;
+$$('.dt-chip',chipsEl).forEach(function(b){b.lastElementChild.textContent=cnt[b.getAttribute('data-f')]||0;b.classList.toggle('on',b.getAttribute('data-f')===fSt)});
+$('#diarioCount').textContent=rows.length?'Mostrando '+shown+' de '+rows.length:''}
+chipsEl.addEventListener('click',function(e){var b=e.target.closest('.dt-chip');if(b){fSt=b.getAttribute('data-f');diarioApply(true)}});
+$('#diarioQ').addEventListener('input',function(e){fq=e.target.value.trim().toLowerCase();diarioApply(true)});
+var dBody=$('#diarioBody');new MutationObserver(function(){diarioApply(true)}).observe(dBody,{childList:true});
+dBody.addEventListener('input',function(){diarioApply(false)});dBody.addEventListener('change',function(){diarioApply(true)});
+$('#diarioAddRow').addEventListener('click',function(){fSt='all';fq='';$('#diarioQ').value='';requestAnimationFrame(function(){var ta=$('#diarioBody tr:last-child textarea');if(ta){ta.focus();ta.scrollIntoView({block:'center',behavior:'smooth'})}})});
+})();
+</script>
+</body>
+</html>
