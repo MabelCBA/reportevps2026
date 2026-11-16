@@ -417,7 +417,7 @@ table.cons-branch-table tr.sel td.cbt-label{box-shadow:inset 4px 0 0 var(--accen
         return { key, value, shared: true };
       }catch(e){
         console.error('storage.set falhou', e);
-        return null;
+        throw e;
       }
     },
     async delete(key){
@@ -426,7 +426,7 @@ table.cons-branch-table tr.sel td.cbt-label{box-shadow:inset 4px 0 0 var(--accen
         return { key, deleted: true, shared: true };
       }catch(e){
         console.error('storage.delete falhou', e);
-        return null;
+        throw e;
       }
     },
     async list(prefix){
@@ -496,7 +496,7 @@ table.cons-branch-table tr.sel td.cbt-label{box-shadow:inset 4px 0 0 var(--accen
     {id:'fechado', label:'Fechado/Padronizado', color:'#15171a'},
   ];
 
-  let state = { page:'home', year:2026, branch:BRANCHES[0].id, qIdx:0, kQIdx:0, data:null, kaizenPhotos:{}, acidentes:undefined, diario:null, diarioSaveTimer:null, saveTimer:null };
+  let state = { page:'home', year:2026, branch:BRANCHES[0].id, qIdx:0, kQIdx:0, data:null, kaizenPhotos:{}, kaizenPhotoIds:{}, kaizenSavedIds:{}, acidentes:undefined, diario:null, diarioSaveTimer:null, saveTimer:null };
 
   function blankData(year){
     const values={}, fechMes={}, comments={}, kaizenNotes={};
@@ -544,6 +544,8 @@ table.cons-branch-table tr.sel td.cbt-label{box-shadow:inset 4px 0 0 var(--accen
     state.year = year;
     state.branch = branch;
     state.kaizenPhotos = {};
+    state.kaizenPhotoIds = {};
+    state.kaizenSavedIds = {};
     document.getElementById('yrLabel').textContent = year;
     document.getElementById('kYrLabel').textContent = year;
     const sel = document.getElementById('branchSelect');
@@ -896,41 +898,90 @@ table.cons-branch-table tr.sel td.cbt-label{box-shadow:inset 4px 0 0 var(--accen
     document.getElementById('kaizenWrap').innerHTML = html;
   }
 
-  // Converte o valor salvo (pode ser uma lista JSON de fotos, ou uma foto única no formato antigo) em array
+  // Formato atual: o documento da semana guarda só a lista de ids {v:2, ids:[...]};
+  // cada foto fica em um documento próprio (photoKey + '__p__' + id), para não
+  // estourar o limite de 1 MB por documento do Firestore.
+  // Formatos antigos (lista JSON de fotos ou uma única data URL) continuam sendo lidos
+  // e são convertidos para o formato novo na próxima vez que a semana for salva.
+  function photoItemKey(baseKey, id){ return baseKey + '__p__' + id; }
+  function newPhotoId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+
   function parsePhotosValue(raw){
-    if(!raw) return [];
+    if(!raw) return {ids:null, photos:[]};
     try{
       const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [raw];
+      if(parsed && parsed.v === 2 && Array.isArray(parsed.ids)) return {ids:parsed.ids, photos:null};
+      return {ids:null, photos: Array.isArray(parsed) ? parsed : [raw]};
     }catch(e){
-      return [raw]; // formato antigo: uma única data URL
+      return {ids:null, photos:[raw]}; // formato antigo: uma única data URL
     }
   }
 
   async function loadKaizenQuarterPhotos(qIdx){
     const weeks = kaizenWeeksOfQuarter(qIdx);
-    const branch = state.branch;
+    const year = state.year, branch = state.branch;
     await Promise.all(weeks.map(async gw=>{
       if(state.kaizenPhotos[gw] !== undefined) return;
+      const baseKey = photoKey(year, gw, branch);
+      let photos = [], ids = [], saved = [];
       try{
-        const res = await window.storage.get(photoKey(state.year, gw, branch), false);
-        state.kaizenPhotos[gw] = (res && res.value) ? parsePhotosValue(res.value) : [];
-      }catch(e){
-        state.kaizenPhotos[gw] = [];
-      }
+        const res = await window.storage.get(baseKey, false);
+        const parsed = parsePhotosValue(res && res.value);
+        if(parsed.ids){
+          const items = await Promise.all(parsed.ids.map(id => window.storage.get(photoItemKey(baseKey, id), false)));
+          parsed.ids.forEach((id, i)=>{
+            const it = items[i];
+            if(it && it.value){ photos.push(it.value); ids.push(id); }
+          });
+          saved = parsed.ids.slice();
+        }else{
+          photos = parsed.photos;
+          ids = photos.map(()=>null); // ainda no formato antigo: serão gravadas separadamente ao salvar
+        }
+      }catch(e){ photos = []; ids = []; }
+      if(state.year !== year || state.branch !== branch) return; // trocou de filial/ano no meio
+      state.kaizenPhotos[gw] = photos;
+      state.kaizenPhotoIds[gw] = ids;
+      state.kaizenSavedIds[gw] = saved;
     }));
   }
 
-  async function saveKaizenPhotos(gw){
+  const kaizenSaveQueue = {};
+  function saveKaizenPhotos(gw){
+    // salva uma semana de cada vez, na ordem, para não misturar gravações
+    const run = ()=> doSaveKaizenPhotos(gw);
+    kaizenSaveQueue[gw] = (kaizenSaveQueue[gw] || Promise.resolve()).then(run, run);
+    return kaizenSaveQueue[gw];
+  }
+
+  async function doSaveKaizenPhotos(gw){
+    const baseKey = photoKey(state.year, gw, state.branch);
     const photos = state.kaizenPhotos[gw] || [];
+    const ids = state.kaizenPhotoIds[gw] || (state.kaizenPhotoIds[gw] = photos.map(()=>null));
+    const prevSaved = state.kaizenSavedIds[gw] || [];
     try{
-      if(photos.length === 0){
-        await window.storage.delete(photoKey(state.year, gw, state.branch), false);
-      }else{
-        await window.storage.set(photoKey(state.year, gw, state.branch), JSON.stringify(photos), false);
+      // 1) grava cada foto nova no seu próprio documento
+      for(let i = 0; i < photos.length; i++){
+        if(ids[i]) continue;
+        const id = newPhotoId();
+        await window.storage.set(photoItemKey(baseKey, id), photos[i], false);
+        ids[i] = id;
       }
+      // 2) grava a lista de fotos da semana
+      const current = ids.slice(0, photos.length);
+      if(current.length === 0) await window.storage.delete(baseKey, false);
+      else await window.storage.set(baseKey, JSON.stringify({v:2, ids:current}), false);
+      state.kaizenSavedIds[gw] = current.slice();
+      // 3) apaga as fotos que foram removidas
+      const removed = prevSaved.filter(id => !current.includes(id));
+      await Promise.all(removed.map(id => window.storage.delete(photoItemKey(baseKey, id), false).catch(()=>{})));
     }catch(err){
-      alert('Não foi possível salvar a(s) foto(s). Tente uma imagem menor.');
+      // tira da tela as fotos que não chegaram ao banco, para não parecer que foram salvas
+      for(let i = photos.length - 1; i >= 0; i--){
+        if(!ids[i]){ photos.splice(i, 1); ids.splice(i, 1); }
+      }
+      buildKaizenWeeks();
+      alert('Não foi possível salvar a(s) foto(s). Verifique a conexão e tente novamente.');
     }
   }
 
@@ -973,7 +1024,9 @@ table.cons-branch-table tr.sel td.cbt-label{box-shadow:inset 4px 0 0 var(--accen
     if(!file) return;
     resizeImageFile(file, 900, 0.72).then(async dataURL=>{
       if(!Array.isArray(state.kaizenPhotos[gw])) state.kaizenPhotos[gw] = [];
+      if(!Array.isArray(state.kaizenPhotoIds[gw])) state.kaizenPhotoIds[gw] = state.kaizenPhotos[gw].map(()=>null);
       state.kaizenPhotos[gw].push(dataURL);
+      state.kaizenPhotoIds[gw].push(null);
       buildKaizenWeeks();
       await saveKaizenPhotos(gw);
     }).catch(()=>{
@@ -988,6 +1041,7 @@ table.cons-branch-table tr.sel td.cbt-label{box-shadow:inset 4px 0 0 var(--accen
       const gw = Number(removeBtn.dataset.gw);
       const idx = Number(removeBtn.dataset.idx);
       if(Array.isArray(state.kaizenPhotos[gw])) state.kaizenPhotos[gw].splice(idx, 1);
+      if(Array.isArray(state.kaizenPhotoIds[gw])) state.kaizenPhotoIds[gw].splice(idx, 1);
       buildKaizenWeeks();
       saveKaizenPhotos(gw);
       return;
